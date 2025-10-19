@@ -2,14 +2,15 @@
 import {useDrvice} from "./store/useDrvice";
 import {Actions, Clean} from "../wailsjs/go/main/App";
 import { ElMessage } from 'element-plus'
+import {ref} from "vue";
 
 const drviceStore = useDrvice();
 drviceStore.getDrviceInfo()
 
+const data = ref()
+
 const actions = async () => {
- const data = await Actions();
- 
-  console.log(data);
+  data.value = await Actions();
 }
 
 const clean = async () => {
@@ -20,6 +21,7 @@ const clean = async () => {
 </script>
 
 <template>
+{{data}}
   <div>
     <button @click="actions">actions</button>
   </div>

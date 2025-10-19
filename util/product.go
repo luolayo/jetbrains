@@ -312,6 +312,8 @@ func ActivateSingleJetbrainsProduct(productDir string) (Product, error) {
 
 	// 从productDir获取产品名称和版本号
 	_, productDirName := filepath.Split(productDir)
+	// 检测产品名称有没有空格有就去掉
+	productDirName = strings.ReplaceAll(productDirName, " ", "")
 	var productName, productVersion string
 	for i, r := range productDirName {
 		if r >= '0' && r <= '9' {
