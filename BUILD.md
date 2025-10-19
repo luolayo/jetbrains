@@ -35,10 +35,12 @@ git push origin v1.0.0
 - ✅ 依赖缓存加速构建
 
 **构建产物：**
-- macOS: amd64、arm64、universal
-- Windows: amd64、arm64
-- Linux: amd64、arm64
+- macOS: amd64、arm64、universal（无压缩）
+- Windows: amd64（UPX 压缩）
+- Linux: amd64（UPX 压缩）
 - 所有文件的 SHA256 校验和
+
+> **注意**: ARM64 架构（Windows ARM64、Linux ARM64）由于交叉编译限制暂不支持。
 
 ##### ⚡ 快速检查（check.yml）
 
@@ -92,22 +94,20 @@ wails build -platform darwin/universal -upx
 ### Windows 平台（需在 Windows 系统上构建）
 
 ```bash
-# x64
+# x64（支持 UPX 压缩）
 wails build -platform windows/amd64 -upx
-
-# ARM64
-wails build -platform windows/arm64 -upx
 ```
+
+> **注意**: Windows ARM64 暂不支持
 
 ### Linux 平台（需在 Linux 系统上构建）
 
 ```bash
-# AMD64
+# AMD64（支持 UPX 压缩）
 wails build -platform linux/amd64 -upx
-
-# ARM64
-wails build -platform linux/arm64 -upx
 ```
+
+> **注意**: Linux ARM64 交叉编译存在问题，暂不支持
 
 ## 使用 Makefile 构建
 
@@ -200,10 +200,16 @@ go install github.com/wailsapp/wails/v2/cmd/wails@latest
 ### Q: 为什么不能从 macOS 构建 Linux 版本？
 A: Wails 依赖于系统原生的 WebView 组件（Linux 上是 WebKit2GTK），无法在 macOS 上交叉编译。建议使用 GitHub Actions 或 Docker。
 
-### Q: Windows 构建时出现 "unknown ARM64 relocation type" 错误？
-A: 这是从 macOS ARM64 交叉编译到 Windows 的已知问题。解决方案：
-1. 使用 GitHub Actions 在 Windows runner 上构建
-2. 或在 Windows 系统上直接构建
+### Q: 为什么不支持 ARM64 架构（Windows/Linux）？
+A: 交叉编译 ARM64 存在以下问题：
+- Linux ARM64: 在 x86_64 上交叉编译汇编代码失败
+- Windows ARM64: CGO 和 relocation 问题
+- 建议: 如需这些平台，请在对应的 ARM64 设备上原生编译
+
+### Q: macOS 为什么不使用 UPX 压缩？
+A: UPX 与 macOS .app bundle 格式不兼容，压缩会导致构建失败。macOS 应用已经相对较小，不需要额外压缩。
 
 ### Q: 如何减小可执行文件体积？
-A: 使用 `-upx` 参数启用 UPX 压缩，可以减小 50-70% 的体积。
+A:
+- Windows/Linux: 使用 `-upx` 参数启用 UPX 压缩，可以减小 50-70% 的体积
+- macOS: 不支持 UPX，但可以使用 `-ldflags="-s -w"` 去除调试信息
