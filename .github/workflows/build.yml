@@ -1,0 +1,298 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version tag (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+env:
+  APP_NAME: jetbrains
+  GO_VERSION: 'stable'
+  NODE_VERSION: '20'
+
+jobs:
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        arch:
+          - amd64
+          - arm64
+          - universal
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [ "${{ github.ref_type }}" == "tag" ]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            VERSION="1.0.0-dev"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build macOS ${{ matrix.arch }}
+        run: |
+          wails build \
+            -platform darwin/${{ matrix.arch }} \
+            -ldflags "-X main.Version=${{ steps.version.outputs.VERSION }}" \
+            -o jetbrains-${{ matrix.arch }}
+
+      - name: Package app
+        run: |
+          cd build/bin
+          if [ "${{ matrix.arch }}" == "universal" ]; then
+            ARCH_TAG="Universal"
+          elif [ "${{ matrix.arch }}" == "amd64" ]; then
+            ARCH_TAG="Intel"
+          else
+            ARCH_TAG="AppleSilicon"
+          fi
+
+          # Create zip archive
+          ditto -c -k --keepParent "${{ env.APP_NAME }}.app" \
+            "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_macOS_${ARCH_TAG}.zip"
+
+          # Generate SHA256
+          shasum -a 256 "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_macOS_${ARCH_TAG}.zip" > \
+            "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_macOS_${ARCH_TAG}.zip.sha256"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-${{ matrix.arch }}
+          path: |
+            build/bin/*.zip
+            build/bin/*.sha256
+          retention-days: 5
+
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch:
+          - amd64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install UPX
+        run: choco install upx -y
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Get version
+        id: version
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [ "${{ github.ref_type }}" == "tag" ]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            VERSION="1.0.0-dev"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Windows ${{ matrix.arch }}
+        shell: bash
+        run: |
+          wails build \
+            -platform windows/${{ matrix.arch }} \
+            -upx \
+            -ldflags "-X main.Version=${{ steps.version.outputs.VERSION }}"
+
+      - name: Package app
+        shell: pwsh
+        run: |
+          cd build/bin
+          $archTag = if ("${{ matrix.arch }}" -eq "amd64") { "x64" } else { "${{ matrix.arch }}" }
+
+          # Create zip archive
+          Compress-Archive -Path "${{ env.APP_NAME }}.exe" `
+            -DestinationPath "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Windows_${archTag}.zip"
+
+          # Generate SHA256
+          $hash = (Get-FileHash "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Windows_${archTag}.zip" -Algorithm SHA256).Hash
+          "$hash  ${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Windows_${archTag}.zip" | `
+            Out-File -FilePath "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Windows_${archTag}.zip.sha256" -Encoding ASCII
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.arch }}
+          path: |
+            build/bin/*.zip
+            build/bin/*.sha256
+          retention-days: 5
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        arch:
+          - amd64
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          # Try WebKit2GTK 4.1 first, fallback to 4.0 for older Ubuntu
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev upx || \
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev upx
+
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.version }}"
+          elif [ "${{ github.ref_type }}" == "tag" ]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            VERSION="1.0.0-dev"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build Linux ${{ matrix.arch }}
+        run: |
+          wails build \
+            -platform linux/${{ matrix.arch }} \
+            -upx \
+            -ldflags "-X main.Version=${{ steps.version.outputs.VERSION }}"
+
+      - name: Package app
+        run: |
+          cd build/bin
+          ARCH_TAG="${{ matrix.arch }}"
+
+          # Create tar.gz archive
+          tar czf "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Linux_${ARCH_TAG}.tar.gz" \
+            "${{ env.APP_NAME }}"
+
+          # Generate SHA256
+          sha256sum "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Linux_${ARCH_TAG}.tar.gz" > \
+            "${{ env.APP_NAME }}_${{ steps.version.outputs.VERSION }}_Linux_${ARCH_TAG}.tar.gz.sha256"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: |
+            build/bin/*.tar.gz
+            build/bin/*.sha256
+          retention-days: 5
+
+  release:
+    name: Create Release
+    needs: [build-macos, build-windows, build-linux]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: Release v${{ steps.version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          files: |
+            artifacts/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

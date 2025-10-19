@@ -62,3 +62,14 @@ func (a *App) Clean() string {
 	_ = util.ReadAllJetbrainsProducts()
 	return "清理完成"
 }
+
+// SetDebugMode 设置debug模式
+func (a *App) SetDebugMode(enabled bool) {
+	util.SetDebugMode(enabled)
+	util.SaveDebugConfig(enabled)
+}
+
+// GetDebugMode 获取当前debug模式状态
+func (a *App) GetDebugMode() bool {
+	return util.IsDebugEnabled()
+}
