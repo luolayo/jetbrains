@@ -1,0 +1,46 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "jetbrains",
+  "outputfilename": "jetbrains",
+  "frontend:install": "pnpm install",
+  "frontend:build": "pnpm run build",
+  "frontend:dev:watcher": "pnpm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "luola",
+    "email": "me@luola.me"
+  },
+  "info": {
+    "companyName": "luola",
+    "productName": "jetbrains激活工具",
+    "productVersion": "1.0.0",
+    "copyright": "Copyright © 2024",
+    "comments": "JetBrains Application"
+  },
+  "nsisType": "multiple",
+  "obfuscated": false,
+  "garbleargs": "",
+  "upx": false,
+  "upxFlags": "",
+  "runNonNativeCGO": false,
+  "windows": {
+    "wailsjsdir": "./frontend",
+    "assetdir": "./frontend/dist",
+    "reloadonchange": false,
+    "build:dir": "./build/windows"
+  },
+  "linux": {
+    "icon": "./build/appicon.png",
+    "wailsjsdir": "./frontend",
+    "assetdir": "./frontend/dist",
+    "reloadonchange": false,
+    "build:dir": "./build/linux"
+  },
+  "darwin": {
+    "icon": "./build/appicon.png",
+    "wailsjsdir": "./frontend",
+    "assetdir": "./frontend/dist",
+    "reloadonchange": false,
+    "build:dir": "./build/darwin"
+  }
+}
