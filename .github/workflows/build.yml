@@ -46,12 +46,9 @@ jobs:
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
-      - name: Install UPX
-        run: brew install upx
-
       - name: Build application
         run: |
-          wails build -platform darwin/${{ matrix.arch }} -upx -clean
+          wails build -platform darwin/${{ matrix.arch }} -clean
         env:
           CGO_ENABLED: 1
 
@@ -74,7 +71,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64, arm64]
+        # 只构建 amd64，ARM64 支持有限
+        arch: [amd64]
 
     steps:
       - name: Checkout
@@ -129,7 +127,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64, arm64]
+        # 只构建 amd64，ARM64 交叉编译困难
+        arch: [amd64]
 
     steps:
       - name: Checkout
@@ -238,11 +237,9 @@ jobs:
 
             #### Windows
             - **x64**: `jetbrains-windows-amd64.zip`
-            - **ARM64**: `jetbrains-windows-arm64.zip`
 
             #### Linux
             - **x64**: `jetbrains-linux-amd64.tar.gz`
-            - **ARM64**: `jetbrains-linux-arm64.tar.gz`
 
             ### 📝 安装说明
 
