@@ -8,11 +8,6 @@ on:
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Release version (e.g., 1.0.0)'
-        required: false
-        default: 'dev'
 
 env:
   GO_VERSION: '1.21'
@@ -43,13 +38,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci
+          npm install
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
@@ -98,13 +91,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci
+          npm install
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
@@ -155,8 +146,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: 'frontend/package-lock.json'
 
       - name: Install system dependencies
         run: |
@@ -165,14 +154,12 @@ jobs:
             build-essential \
             libgtk-3-dev \
             libwebkit2gtk-4.0-dev \
-            upx \
-            libnss3-dev \
-            libxss1
+            upx
 
       - name: Install frontend dependencies
         run: |
           cd frontend
-          npm ci
+          npm install
 
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
@@ -268,9 +255,13 @@ jobs:
 
             请查看 `checksums.txt` 文件以验证下载的完整性。
 
+            ```bash
+            sha256sum -c checksums.txt
+            ```
+
             ---
 
-            **完整变更日志**: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            **完整变更日志**: https://github.com/${{ github.repository }}/commits/${{ github.sha }}
           files: |
             release-assets/*
           draft: false
