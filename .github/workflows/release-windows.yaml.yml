@@ -107,12 +107,13 @@ jobs:
           -nsis -webview2 embed \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }}"
 
-      - name: Sign the installer
-        uses: dlemstra/code-sign-action@v1
-        with:
-          certificate: ${{ secrets.WIN_SIGNING_CERT }}
-          password: ${{ secrets.WIN_SIGNING_CERT_PASSWORD }}
-          folder: ./build/bin
+      # Code signing disabled for personal project
+      # - name: Sign the installer
+      #   uses: dlemstra/code-sign-action@v1
+      #   with:
+      #     certificate: ${{ secrets.WIN_SIGNING_CERT }}
+      #     password: ${{ secrets.WIN_SIGNING_CERT_PASSWORD }}
+      #     folder: ./build/bin
 
       - name: Rename installer
         working-directory: ./build/bin

@@ -168,7 +168,7 @@ jobs:
         run: mv "jetbrains_${{ steps.normalise_version.outputs.version }}_amd64.deb" "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.deb"
 
       - name: Rename appimage
-        run: mv Tiny_RDM-${{ steps.normalise_platform_arch.outputs.arch }}.AppImage "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.AppImage"
+        run: mv jetbrains-${{ steps.normalise_platform_arch.outputs.arch }}.AppImage "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.AppImage"
 
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
