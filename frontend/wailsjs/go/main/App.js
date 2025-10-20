@@ -10,6 +10,14 @@ export function Clean() {
   return window['go']['main']['App']['Clean']();
 }
 
+export function CopyText() {
+  return window['go']['main']['App']['CopyText']();
+}
+
+export function DownloadAndExtract(arg1, arg2) {
+  return window['go']['main']['App']['DownloadAndExtract'](arg1, arg2);
+}
+
 export function GetDeviceID() {
   return window['go']['main']['App']['GetDeviceID']();
 }

@@ -6,6 +6,10 @@ export function Actions():Promise<util.ActionsType>;
 
 export function Clean():Promise<string>;
 
+export function CopyText():Promise<string>;
+
+export function DownloadAndExtract(arg1:Array<number>,arg2:string):Promise<void>;
+
 export function GetDeviceID():Promise<util.DeviceInfo>;
 
 export function Greet(arg1:string):Promise<string>;

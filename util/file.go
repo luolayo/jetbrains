@@ -1,10 +1,13 @@
 package util
 
 import (
+	"archive/zip"
+	"io"
 	"jetbrains/global"
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 // InitGlobalPaths 初始化全局路径变量
@@ -43,7 +46,7 @@ func GetConfigDir() string {
 	var configDir string
 	switch global.OS {
 	case "windows":
-		configDir = filepath.Join(global.UserHome, "AppData", "Roaming", "Jetbrains")
+		configDir = filepath.Join(global.UserHome, "AppData", "Local", "Jetbrains")
 	case "darwin":
 		configDir = filepath.Join(global.UserHome, "Library", "Caches", "Jetbrains")
 	case "linux":
@@ -58,7 +61,7 @@ func GetConfigDir() string {
 func getWorkDir() {
 	switch global.OS {
 	case "windows":
-		global.WorkDir = filepath.Join(global.UserHome, "Public", ".jb_run")
+		global.WorkDir = filepath.Join(global.UserHome, "../", "Public", ".jb_run")
 	case "darwin", "linux":
 		global.WorkDir = filepath.Join(global.UserHome, ".jb_run")
 	}
@@ -78,4 +81,90 @@ func EnsureDir(dir string, flag bool) (bool, error) {
 		}
 	}
 	return true, nil
+}
+
+// UnzipFile 解压 zip 文件到指定目录
+func UnzipFile(zipPath, destDir string) error {
+	reader, err := zip.OpenReader(zipPath)
+	if err != nil {
+		return err
+	}
+	defer reader.Close()
+
+	// 确保目标目录存在
+	if err := os.MkdirAll(destDir, 0755); err != nil {
+		return err
+	}
+
+	// 遍历 zip 文件中的所有文件
+	for _, file := range reader.File {
+		// 构建目标文件路径
+		path := filepath.Join(destDir, file.Name)
+
+		// 检查是否为 Zip Slip 漏洞
+		if !strings.HasPrefix(path, filepath.Clean(destDir)+string(os.PathSeparator)) {
+			return os.ErrInvalid
+		}
+
+		if file.FileInfo().IsDir() {
+			// 如果是目录，创建目录
+			os.MkdirAll(path, file.Mode())
+			continue
+		}
+
+		// 创建文件所在的目录
+		if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+			return err
+		}
+
+		// 创建目标文件
+		destFile, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			return err
+		}
+
+		// 打开 zip 中的文件
+		srcFile, err := file.Open()
+		if err != nil {
+			destFile.Close()
+			return err
+		}
+
+		// 复制文件内容
+		_, err = io.Copy(destFile, srcFile)
+		srcFile.Close()
+		destFile.Close()
+
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ClearWorkDir 清空工作目录中的所有文件和子目录
+func ClearWorkDir() error {
+	entries, err := os.ReadDir(global.WorkDir)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		entryPath := filepath.Join(global.WorkDir, entry.Name())
+		err := os.RemoveAll(entryPath)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func CopyTextFromWorkDir() string {
+	textFilePath := filepath.Join(global.WorkDir, "激活码.txt")
+	data, err := os.ReadFile(textFilePath)
+	if err != nil {
+		return ""
+	}
+	return string(data)
 }

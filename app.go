@@ -3,7 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"jetbrains/global"
 	"jetbrains/util"
+	"os"
+	"path/filepath"
 )
 
 // App struct
@@ -58,7 +61,47 @@ func (a *App) Actions() util.ActionsType {
 
 // Clean 激活清理
 func (a *App) Clean() string {
-	_ = util.RemoveEnvOther()
+	switch global.OS {
+	case "darwin", "linux":
+		_ = util.RemoveEnvOther()
+	default:
+	}
+
 	_ = util.ReadAllJetbrainsProducts()
 	return "清理完成"
+}
+
+// DownloadAndExtract 下载并解压文件到 WorkDir
+// fileData: 文件的字节数据
+// filename: 文件名（例如: "jetbrains-activation.zip"）
+func (a *App) DownloadAndExtract(fileData []byte, filename string) error {
+	// 清空workdir 里面的文件
+	err := util.ClearWorkDir()
+	if err != nil {
+		return fmt.Errorf("清空工作目录失败: %v", err)
+	}
+	// 构建保存路径
+	zipPath := filepath.Join(global.WorkDir, filename)
+
+	// 保存文件到 WorkDir
+	if err := os.WriteFile(zipPath, fileData, 0644); err != nil {
+		return fmt.Errorf("保存文件失败: %v", err)
+	}
+
+	// 解压文件到 WorkDir
+	if err := util.UnzipFile(zipPath, global.WorkDir); err != nil {
+		return fmt.Errorf("解压文件失败: %v", err)
+	}
+
+	// 删除 zip 文件
+	if err := os.Remove(zipPath); err != nil {
+		fmt.Printf("删除 zip 文件失败: %v\n", err)
+	}
+
+	return nil
+}
+
+// CopyText 从工作目录的激活码.txt 复制文本内容
+func (a *App) CopyText() string {
+	return util.CopyTextFromWorkDir()
 }

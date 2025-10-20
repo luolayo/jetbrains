@@ -2,9 +2,9 @@ package util
 
 import (
 	"fmt"
+	"jetbrains/global"
 	"os"
 	"path/filepath"
-	"runtime"
 )
 
 type Product struct {
@@ -22,8 +22,12 @@ func (a *ActionsType) Actions() ActionsType {
 	if !flag {
 		a.Error = append(a.Error, "未检测到 Jetbrains 应用数据目录，请确保您需要激活的软件已安装，并且已运行过一次！")
 	}
-	if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
+	// 只有 macOS 和 Linux 需要移除其他环境变量
+	switch global.OS {
+	case "darwin", "linux":
 		_ = RemoveEnvOther()
+	default:
+		// Windows 不需要移除其他环境变量
 	}
 	err := ReadAllJetbrainsProducts()
 	if err != nil {

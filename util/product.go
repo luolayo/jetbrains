@@ -50,7 +50,7 @@ func HandleJetbrainsProducts(productDir string, productName string, productDirNa
 	var vmoptions string
 	switch global.OS {
 	case "windows":
-		vmoptions = "64.vmoptions"
+		vmoptions = "64.exe.vmoptions"
 	case "darwin":
 		vmoptions = ".vmoptions"
 	case "linux":
@@ -66,10 +66,15 @@ func HandleJetbrainsProducts(productDir string, productName string, productDirNa
 	if err != nil {
 		return err
 	}
-	vmoptionsPath2 := filepath.Join(GetAppDataDir(), productDirName, productCode+vmoptions)
-	err = RemoveJetbrainsProductVmoptions(vmoptionsPath2)
-	if err != nil {
-		return err
+	switch global.OS {
+	case "darwin", "linux":
+		vmoptionsPath2 := filepath.Join(GetAppDataDir(), productDirName, productCode+vmoptions)
+		err = RemoveJetbrainsProductVmoptions(vmoptionsPath2)
+		if err != nil {
+			return err
+		}
+	default:
+		// Windows 不需要处理第二个 vmoptions 文件
 	}
 
 	otherVmoptionsPattern := regexp.MustCompile(`^jetbrains_.*\.vmoptions$`)
@@ -337,7 +342,7 @@ func ActivateJetbrainsProduct(productDir string, productName string, productDirN
 	var vmoptions string
 	switch global.OS {
 	case "windows":
-		vmoptions = "64.vmoptions"
+		vmoptions = "64.exe.vmoptions"
 	case "darwin":
 		vmoptions = ".vmoptions"
 	case "linux":
@@ -353,10 +358,15 @@ func ActivateJetbrainsProduct(productDir string, productName string, productDirN
 	if err != nil {
 		return err
 	}
-	vmoptionsPath2 := filepath.Join(GetAppDataDir(), productDirName, productCode+vmoptions)
-	err = AppendVmoptionsForActivation(vmoptionsPath2)
-	if err != nil {
-		return err
+	switch global.OS {
+	case "darwin", "linux":
+		vmoptionsPath2 := filepath.Join(GetAppDataDir(), productDirName, productCode+vmoptions)
+		err = AppendVmoptionsForActivation(vmoptionsPath2)
+		if err != nil {
+			return err
+		}
+	default:
+		// Windows 不需要处理第二个 vmoptions 文件
 	}
 	return nil
 }

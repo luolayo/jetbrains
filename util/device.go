@@ -28,6 +28,7 @@ func (a *App) GetDeviceID() DeviceInfo {
 		}
 		return DeviceInfo{Error: errorMsg}
 	}
+	fmt.Printf("机器码信息: %v\n", machinecode.Machine)
 
 	return DeviceInfo{
 		MachineCode: machinecode.Machine,

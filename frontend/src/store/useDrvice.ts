@@ -1,6 +1,14 @@
 import {defineStore} from "pinia";
 import {GetDeviceID} from "../../wailsjs/go/main/App";
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
+
+interface DeviceIDType {
+    uuid: string;
+    boardSerialNumber: string;
+    cpuSerialNumber: string;
+    diskSerialNumber: string;
+    mac: string;
+}
 
 export const useDrvice = defineStore('drvice', () => {
     const drviceInfo = reactive<DeviceIDType>(
@@ -9,9 +17,10 @@ export const useDrvice = defineStore('drvice', () => {
             boardSerialNumber: '',
             cpuSerialNumber: '',
             diskSerialNumber: '',
-            mac: ''
+            mac: '',
         }
     );
+    const code = ref<string>('');
 
     const getDrviceInfo = async () => {
         const data = await GetDeviceID()
@@ -21,5 +30,12 @@ export const useDrvice = defineStore('drvice', () => {
         Object.assign(drviceInfo, data.machineCode)
     }
 
-    return {drviceInfo, getDrviceInfo}
+    const getCode = async () => {
+        const res = await fetch("http://localhost:8080/api/code",{
+            method: "GET",
+        })
+        code.value = (await res.json()).data.code
+    }
+
+    return {drviceInfo, getDrviceInfo,getCode,code}
 })

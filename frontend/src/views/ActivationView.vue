@@ -329,6 +329,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {Download, Verification} from "../api";
+import {useDrvice} from "../store/useDrvice";
+import {decrypt} from "../util/crypt";
+import {Actions, CopyText, DownloadAndExtract} from '../../wailsjs/go/main/App'
 
 interface ActivatedSoftware {
   productName: string
@@ -336,11 +340,14 @@ interface ActivatedSoftware {
   status: 'success' | 'failed'
 }
 
+
 interface ActivationResult {
   status: 'success' | 'failed'
   activationCode?: string
   errorMessage?: string
 }
+
+const drive = useDrvice()
 
 // 状态
 const selectedVersion = ref<'high' | 'low'>('high')
@@ -384,50 +391,83 @@ const startActivation = async () => {
   const steps = [
     '正在连接服务器...',
     '正在验证设备信息...',
+    '正在下载激活数据...',
     '正在应用激活...'
   ]
 
-  for (const step of steps) {
-    activationProgress.value = step
-    await new Promise(resolve => setTimeout(resolve, 1000))
-  }
+  try {
+    activationProgress.value = steps[0]
+    const result = await Verification(drive.drviceInfo.uuid, drive.drviceInfo.mac)
+    const dataString = await decrypt(result.data, drive.code)
+    const data = JSON.parse(dataString)
 
-  // 模拟激活结果（70% 成功率）
-  const isSuccess = Math.random() > 0.3
-
-  if (isSuccess) {
-    // 模拟多个软件的激活
-    const products = ['IntelliJIdea2025.2', 'WebStorm2025.2', 'PyCharm2025.2']
-    const currentTime = getTimestamp()
-
-    // 为每个产品添加到已激活软件列表
-    products.forEach(product => {
-      activatedSoftwareList.value.unshift({
-        productName: product,
-        time: currentTime,
-        status: 'success'
-      })
-    })
-
-    // 生成模拟激活码
-    const activationCode = 'JETBRAINS-LICENSE-KEY-2025\n' +
-      'ABCD1234-EFGH5678-IJKL9012-MNOP3456\n' +
-      'QRST7890-UVWX1234-YZAB5678-CDEF9012\n' +
-      'VALID-UNTIL: 2026-12-31'
-
-    activationResult.value = {
-      status: 'success',
-      activationCode: activationCode
+    if (data.code !== 200) {
+      activationResult.value = {
+        status: 'failed',
+        errorMessage: data.message || '未知错误，请稍后重试'
+      }
+      isActivating.value = false
+      showResultModal.value = true
+      return
     }
-  } else {
+
+    activationProgress.value = steps[2]
+    const version = selectedVersion.value === 'high' ? 'new' : 'old'
+    const resultDown = await Download(drive.drviceInfo.uuid, drive.drviceInfo.mac, version)
+
+    // 检查返回的是 JSON 还是文件
+    if (resultDown instanceof Blob) {
+      activationProgress.value = steps[3]
+
+      // 将 Blob 转换为 ArrayBuffer 然后转为字节数组
+      const arrayBuffer = await resultDown.arrayBuffer()
+      const uint8Array = new Uint8Array(arrayBuffer)
+
+      // 调用 Go 后端方法下载并解压到 WorkDir
+      const filename = `jetbrains-activation-${version}.zip`
+      await DownloadAndExtract(Array.from(uint8Array), filename)
+      const ActionsData = await Actions()
+      if (ActionsData?.error){
+        activationResult.value = {
+          status: 'failed',
+        }
+      } else {
+        // 激活成功
+        const txt = await CopyText()
+        activationResult.value = {
+          status: 'success',
+          activationCode: txt,
+        }
+        // 填充已激活软件列表
+        activatedSoftwareList.value = ActionsData.product.map((item: { productName: string;
+          productVersion: string}) => ({
+          productName: item.productName,
+          time: getTimestamp(),
+          status: 'success'
+        }))
+
+      }
+
+      showResultModal.value = true
+      isActivating.value = false
+    } else {
+      console.log(resultDown)
+      activationResult.value = {
+        status: 'failed',
+        errorMessage: resultDown.message || '下载失败，请稍后重试'
+      }
+      showResultModal.value = true
+      isActivating.value = false
+    }
+  } catch (error) {
+    console.error('激活失败:', error)
     activationResult.value = {
       status: 'failed',
-      errorMessage: '激活失败，请重试或联系客服'
+      errorMessage: error instanceof Error ? error.message : '未知错误，请稍后重试'
     }
+    showResultModal.value = true
+    isActivating.value = false
   }
-
-  isActivating.value = false
-  showResultModal.value = true
 }
 
 // 重试激活
