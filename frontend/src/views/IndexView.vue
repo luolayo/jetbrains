@@ -185,7 +185,7 @@ const initialVerification = async (): Promise<{ data: string }> => {
 }
 
 const verifyOrderNumber = async (order: string): Promise<{data: string}> => {
-  const res = await fetch("http://localhost:8080/api/order/device/add", {
+  const res = await fetch("https://api.luola.me/api/order/device/add", {
     method: "POST",
     headers: {
       'Content-Type': 'application/json'

@@ -31,7 +31,7 @@ export const useDrvice = defineStore('drvice', () => {
     }
 
     const getCode = async () => {
-        const res = await fetch("http://localhost:8080/api/code",{
+        const res = await fetch("https://api.luola.me/api/code",{
             method: "GET",
         })
         code.value = (await res.json()).data.code

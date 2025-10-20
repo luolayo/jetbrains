@@ -1,5 +1,5 @@
 export const Verification = async (uuid: string,mac: string): Promise<{ data: string }> => {
-    const res = await fetch("http://localhost:8080/api/order/vaild", {
+    const res = await fetch("https://api.luola.me/api/order/vaild", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -13,7 +13,7 @@ export const Verification = async (uuid: string,mac: string): Promise<{ data: st
 }
 
 export const Download = async (uuid: string, mac: string,version: string): Promise<any> => {
-  const res =  await fetch("http://localhost:8080/api/download/jetbra",{
+  const res =  await fetch("https://api.luola.me/api/download/jetbra",{
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
