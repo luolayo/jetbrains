@@ -1,5 +1,5 @@
 # Wails 构建产物
-build/
+build/bin
 wails_build_*
 
 # 前端
