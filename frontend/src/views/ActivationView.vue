@@ -430,6 +430,7 @@ const startActivation = async () => {
       if (ActionsData?.error){
         activationResult.value = {
           status: 'failed',
+          errorMessage: ActionsData.error.join('\n') || '激活失败，请稍后重试'
         }
       } else {
         // 激活成功
