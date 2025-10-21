@@ -1,6 +1,7 @@
 import {defineStore} from "pinia";
 import {GetDeviceID} from "../../wailsjs/go/main/App";
 import {reactive, ref} from "vue";
+import {ElMessage} from "element-plus";
 
 interface DeviceIDType {
     uuid: string;
@@ -25,7 +26,10 @@ export const useDrvice = defineStore('drvice', () => {
     const getDrviceInfo = async () => {
         const data = await GetDeviceID()
         if (data?.error) {
-            throw new Error(data.error)
+            ElMessage.error(
+                `获取设备信息失败: WMIC未安装，请查看问题列表的解决办法`
+            )
+            return
         }
         Object.assign(drviceInfo, data.machineCode)
     }
