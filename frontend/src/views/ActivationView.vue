@@ -299,9 +299,12 @@
               <p class="text-slate-600 mb-6">{{ activationResult.errorMessage }}</p>
 
               <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
-                <h4 class="font-semibold text-red-900 mb-2">唯一的原因：</h4>
+                <h4 class="font-semibold text-red-900 mb-2">可能的原因：</h4>
                 <ul class="space-y-1 text-sm text-red-700">
                   <li>软件没有安装</li>
+                  <li>win 被杀毒拦截没有权限</li>
+                  <li>mac 没有给磁盘权限</li>
+                  <li>激活失败大概率是读取不到文件夹，没有文件夹权限</li>
                 </ul>
               </div>
 
