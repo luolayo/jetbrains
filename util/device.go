@@ -50,6 +50,13 @@ func (a *App) GetDeviceID() DeviceInfo {
 			machinecode.Machine.BoardSerialNumber = boardSN
 			machinecode.Machine.CpuSerialNumber = cpuSN
 			machinecode.Machine.DiskSerialNumber = diskSN
+			// 打印设备信息
+			fmt.Println("========== 设备信息 ==========")
+			fmt.Printf("BIOS序列号: %s\n", uuid)
+			fmt.Printf("主板序列号: %s\n", boardSN)
+			fmt.Printf("CPU序列号: %s\n", cpuSN)
+			fmt.Printf("硬盘序列号: %s\n", diskSN)
+			fmt.Println("=============================")
 			return DeviceInfo{
 				MachineCode: machinecode.Machine,
 			}
@@ -69,14 +76,22 @@ func (a *App) GetDeviceID() DeviceInfo {
 }
 
 func getBIOSSerialNumber() (string, error) {
+	// 优先获取 UUID，如果失败则尝试主板序列号
 	cmd := exec.Command("powershell", "-Command",
-		"Get-WmiObject -Class Win32_Bios | Select-Object -ExpandProperty SerialNumber")
-
+		"$cs = Get-CimInstance Win32_ComputerSystemProduct; "+
+			"if ($cs.UUID -and $cs.UUID -ne '00000000-0000-0000-0000-000000000000') { $cs.UUID } "+
+			"else { (Get-CimInstance Win32_BaseBoard | Select-Object -First 1).SerialNumber }")
 	output, err := cmd.Output()
 	if err != nil {
 		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
 	}
-	return strings.TrimSpace(string(output)), nil
+	result := strings.TrimSpace(string(output))
+
+	// 清理可能的多余空白和换行
+	result = strings.ReplaceAll(result, "\r", "")
+	result = strings.ReplaceAll(result, "\n", "")
+
+	return result, nil
 }
 
 func getCPUSerialNumber() (string, error) {
