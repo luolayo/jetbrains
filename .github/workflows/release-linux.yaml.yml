@@ -21,6 +21,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
+          - linux/aarch64
 
     steps:
       - name: Checkout source code
