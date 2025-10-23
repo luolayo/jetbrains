@@ -162,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { ElMessage } from 'element-plus'
+import {ElMessage} from 'element-plus'
 import {ref, onMounted} from 'vue'
 import {useDrvice} from "../store/useDrvice";
 import {decrypt} from "../util/crypt";
@@ -181,10 +181,15 @@ const errorMessage = ref('')
 
 
 const initialVerification = async (): Promise<{ data: string }> => {
+  if (!drvice.drviceInfo.uuid || !drvice.drviceInfo.mac) {
+    return drvice.getDrviceInfo().then(() => {
+      return Verification(drvice.drviceInfo.uuid, drvice.drviceInfo.mac)
+    })
+  }
   return Verification(drvice.drviceInfo.uuid, drvice.drviceInfo.mac)
 }
 
-const verifyOrderNumber = async (order: string): Promise<{data: string}> => {
+const verifyOrderNumber = async (order: string): Promise<{ data: string }> => {
   const res = await fetch("https://api.luola.me/api/order/device/add", {
     method: "POST",
     headers: {
@@ -228,12 +233,12 @@ const handleSubmitOrder = async () => {
   const dataString = await decrypt(result.data, drvice.code)
   const data = JSON.parse(dataString)
   console.log(data)
-  if (data.code !== 200){
+  if (data.code !== 200) {
     verifying.value = false
     ElMessage.error(data.msg || '验证失败，请重试')
     return
   }
-    status.value = 'success'
+  status.value = 'success'
   ElMessage({
     message: '绑定成功，正在进入系统...',
     type: 'success',

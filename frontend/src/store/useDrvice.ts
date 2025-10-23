@@ -27,11 +27,12 @@ export const useDrvice = defineStore('drvice', () => {
         const data = await GetDeviceID()
         if (data?.error) {
             ElMessage.error(
-                `获取设备信息失败: WMIC未安装，请查看问题列表的解决办法`
+                `获取设备信息失败: ${data.error}`
             )
             return
         }
         Object.assign(drviceInfo, data.machineCode)
+        
     }
 
     const getCode = async () => {
