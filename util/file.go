@@ -16,13 +16,38 @@ func InitGlobalPaths() error {
 	global.OS = runtime.GOOS
 
 	// 获取用户主目录
-	homeDir, err := os.UserHomeDir()
+	homeDir, err := getRealUserHome()
 	if err != nil {
 		return err
 	}
 	global.UserHome = homeDir
 	getWorkDir()
 	return nil
+}
+
+// getRealUserHome 获取真实用户的主目录（处理sudo情况）
+func getRealUserHome() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+
+	// 在Linux/macOS上，如果通过sudo运行，获取原始用户的主目录
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		// 检查是否通过sudo运行
+		if sudoUser := os.Getenv("SUDO_USER"); sudoUser != "" {
+			// 确认当前是root用户
+			if os.Getuid() == 0 {
+				if runtime.GOOS == "darwin" {
+					return filepath.Join("/Users", sudoUser), nil
+				}
+				// Linux
+				return filepath.Join("/home", sudoUser), nil
+			}
+		}
+	}
+
+	return homeDir, nil
 }
 
 // GetAppDataDir 获取应用数据目录

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"jetbrains/global"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -61,6 +62,32 @@ func (a *App) GetDeviceID() DeviceInfo {
 				MachineCode: machinecode.Machine,
 			}
 		}
+
+		// Linux系统：使用machine-id作为后备方案（不需要sudo权限）
+		if global.OS == "linux" {
+			machineID, err := GetLinuxMachineID()
+			if err != nil {
+				fmt.Println("获取机器码信息错误:")
+				errorMsg := ""
+				for _, e := range machinecode.MachineErr {
+					fmt.Println(e.Error())
+					errorMsg += e.Error() + "; "
+				}
+				errorMsg += "无法获取machine-id: " + err.Error()
+				return DeviceInfo{Error: errorMsg}
+			}
+
+			// 使用machine-id作为UUID
+			machinecode.Machine.UUID = machineID
+			fmt.Println("========== 设备信息 ==========")
+			fmt.Printf("Machine ID: %s\n", machineID)
+			fmt.Println("注意: 使用/etc/machine-id作为设备标识（无需sudo权限）")
+			fmt.Println("=============================")
+			return DeviceInfo{
+				MachineCode: machinecode.Machine,
+			}
+		}
+
 		fmt.Println("获取机器码信息错误:")
 		errorMsg := ""
 		for _, err := range machinecode.MachineErr {
@@ -122,4 +149,26 @@ func getBoardSerialNumber() (string, error) {
 		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
 	}
 	return strings.TrimSpace(string(output)), nil
+}
+
+// GetLinuxMachineID 获取Linux机器ID（不需要root权限）
+// 优先读取 /etc/machine-id，如果失败则尝试 /var/lib/dbus/machine-id
+func GetLinuxMachineID() (string, error) {
+	// 尝试读取 /etc/machine-id
+	if data, err := os.ReadFile("/etc/machine-id"); err == nil {
+		machineID := strings.TrimSpace(string(data))
+		if machineID != "" {
+			return machineID, nil
+		}
+	}
+
+	// 尝试读取 /var/lib/dbus/machine-id
+	if data, err := os.ReadFile("/var/lib/dbus/machine-id"); err == nil {
+		machineID := strings.TrimSpace(string(data))
+		if machineID != "" {
+			return machineID, nil
+		}
+	}
+
+	return "", fmt.Errorf("无法读取machine-id文件")
 }
