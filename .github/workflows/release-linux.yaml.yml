@@ -77,6 +77,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Enable QEMU for multi-arch (ARM64)
+        if: ${{ matrix.platform == 'linux/arm64' }}
+        uses: docker/setup-qemu-action@v3
+
       - name: Build frontend assets
         shell: bash
         run: |
@@ -88,12 +92,29 @@ jobs:
           mv tmp.json package.json
           npm install
 
-      - name: Build wails app for Linux
+      - name: Build wails app for Linux (amd64)
+        if: ${{ matrix.platform == 'linux/amd64' }}
         shell: bash
         run: |
           CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} -debug \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.LINUX_GA_SECRET }}" \
           -o jetbrains
+
+      - name: Build wails app for Linux (arm64 in container)
+        if: ${{ matrix.platform == 'linux/arm64' }}
+        shell: bash
+        run: |
+          docker run --rm --platform linux/arm64 -v "$PWD":"$PWD" -w "$PWD" ubuntu:24.04 bash -lc '
+            set -e
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install -y curl jq git build-essential pkg-config libgtk-3-dev libwebkit2gtk-4.0-dev libfuse-dev libfuse2 nodejs npm golang
+            go install github.com/wailsapp/wails/v2/cmd/wails@latest
+            npm install -g npm@9
+            cd frontend && npm ci && cd ..
+            CGO_ENABLED=1 wails build -platform linux/arm64 -debug \
+              -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.LINUX_GA_SECRET }}" \
+              -o jetbrains
+          '
 
       - name: Setup control template
         shell: bash
@@ -127,7 +148,8 @@ jobs:
           sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}/DEBIAN/control"
           dpkg-deb --build -Zxz "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}"
 
-      - name: Package up appimage file
+      - name: Package up appimage file (amd64)
+        if: ${{ matrix.platform == 'linux/amd64' }}
         run: |
           curl https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20240109-1/linuxdeploy-${{ steps.normalise_platform_arch.outputs.arch }}.AppImage \
                 -o linuxdeploy \
@@ -165,6 +187,46 @@ jobs:
              --plugin=gtk \
              -e $build_dir/usr/local/bin/jetbrains \
              -d $build_dir/usr/share/applications/jetbrains.desktop
+
+      - name: Package up appimage file (arm64 in container)
+        if: ${{ matrix.platform == 'linux/arm64' }}
+        run: |
+          docker run --rm --platform linux/arm64 -v "$PWD":"$PWD" -w "$PWD" ubuntu:24.04 bash -lc '
+            set -e
+            apt-get update
+            DEBIAN_FRONTEND=noninteractive apt-get install -y curl jq git libfuse-dev libfuse2
+            curl https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20240109-1/linuxdeploy-${{ steps.normalise_platform_arch.outputs.arch }}.AppImage -o linuxdeploy -L
+            chmod u+x linuxdeploy
+
+            ./linuxdeploy --appdir AppDir
+
+            pushd AppDir
+            find /usr/lib* -name WebKitNetworkProcess -exec mkdir -p $(dirname "{}") \; -exec cp --parents "{}" "." \; || true
+            find /usr/lib* -name WebKitWebProcess -exec mkdir -p $(dirname "{}") \; -exec cp --parents "{}" "." \; || true
+            find /usr/lib* -name libwebkit2gtkinjectedbundle.so -exec mkdir -p $(dirname "{}") \; -exec cp --parents "{}" "." \; || true
+            popd
+
+            mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
+            build_dir="build/linux/jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}"
+
+            cp -r $build_dir/usr/share/icons/hicolor/512x512/apps/jetbrains.png AppDir/usr/share/icons/hicolor/512x512/apps/
+            cp $build_dir/usr/local/bin/jetbrains AppDir/usr/bin/
+
+            sed -i "s#/usr/local/bin/jetbrains#jetbrains#g" $build_dir/usr/share/applications/jetbrains.desktop
+
+            curl -o linuxdeploy-plugin-gtk.sh "https://raw.githubusercontent.com/tauri-apps/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh"
+
+            sed -i "/XDG_DATA_DIRS/a export WEBKIT_DISABLE_COMPOSITING_MODE=1" linuxdeploy-plugin-gtk.sh
+            chmod +x linuxdeploy-plugin-gtk.sh
+
+            curl -o AppDir/AppRun https://github.com/AppImage/AppImageKit/releases/download/continuous/AppRun-${{ steps.normalise_platform_arch.outputs.arch }} -L
+
+            ./linuxdeploy --appdir AppDir \
+               --output=appimage \
+               --plugin=gtk \
+               -e $build_dir/usr/local/bin/jetbrains \
+               -d $build_dir/usr/share/applications/jetbrains.desktop
+          '
 
       - name: Rename deb
         working-directory: ./build/linux
