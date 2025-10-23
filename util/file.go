@@ -57,7 +57,7 @@ func GetAppDataDir() string {
 	case "windows":
 		appDataDir = filepath.Join(global.UserHome, "AppData", "Local", "Jetbrains")
 	case "darwin":
-		appDataDir = filepath.Join(global.UserHome, "Library", "Application Support", "Jetbrains")
+		appDataDir = filepath.Join(global.UserHome, "Roaming", "Application Support", "Jetbrains")
 	case "linux":
 		appDataDir = filepath.Join(global.UserHome, ".config", "share", "Jetbrains")
 	default:
