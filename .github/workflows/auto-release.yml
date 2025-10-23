@@ -51,4 +51,6 @@ jobs:
           body_path: changelog.txt
           draft: false
           prerelease: false
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # 使用 PAT 而不是 GITHUB_TOKEN，这样可以触发其他 workflow
+          # 需要在仓库设置中添加一个 PAT secret，权限需要包含 repo 和 workflow
+          token: ${{ secrets.PAT_TOKEN }}
