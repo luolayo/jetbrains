@@ -39,8 +39,10 @@ jobs:
         run: |
           if [ "${{ matrix.platform }}" == "linux/amd64" ]; then
             echo "arch=x86_64" >> "$GITHUB_OUTPUT"
+            echo "deb_arch=amd64" >> "$GITHUB_OUTPUT"
           elif [ "${{ matrix.platform }}" == "linux/aarch64" ]; then
             echo "arch=aarch64" >> "$GITHUB_OUTPUT"
+            echo "deb_arch=arm64" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Normalise version tag
@@ -96,7 +98,7 @@ jobs:
       - name: Setup control template
         shell: bash
         run: |
-          content=$(cat build/linux/jetbrains_0.0.0_amd64/DEBIAN/control)
+          content=$(cat build/linux/jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }}/DEBIAN/control)
           name=$(jq -r '.name' wails.json | tr -d ' ' | tr '[:upper:]' '[:lower:]')
           content=$(echo "$content" | sed -e "s/{{.Name}}/$name/g")
           content=$(echo "$content" | sed -e "s/{{.Info.ProductVersion}}/$(jq -r '.info.productVersion' wails.json)/g")
@@ -105,25 +107,25 @@ jobs:
           content=$(echo "$content" | sed -e "s/{{.Info.Comments}}/$(jq -r '.info.comments' wails.json)/g")
           content=$(echo "$content" | sed -e "s/{{.libwebkit2gtk.PackageName}}/libwebkit2gtk-4.0-37/g")
           echo $content
-          echo "$content" > build/linux/jetbrains_0.0.0_amd64/DEBIAN/control
+          echo "$content" > build/linux/jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }}/DEBIAN/control
 
       - name: Setup app template
         shell: bash
         run: |
-          content=$(cat build/linux/jetbrains_0.0.0_amd64/usr/share/applications/jetbrains.desktop)
+          content=$(cat build/linux/jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }}/usr/share/applications/jetbrains.desktop)
           content=$(echo "$content" | sed -e "s/{{.Info.ProductName}}/$(jq -r '.info.productName' wails.json)/g")
           content=$(echo "$content" | sed -e "s/{{.Info.Comments}}/$(jq -r '.info.comments' wails.json)/g")
           echo $content
-          echo "$content" > build/linux/jetbrains_0.0.0_amd64/usr/share/applications/jetbrains.desktop
+          echo "$content" > build/linux/jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }}/usr/share/applications/jetbrains.desktop
 
       - name: Package up deb file
         shell: bash
         run: |
-          mv build/bin/jetbrains build/linux/jetbrains_0.0.0_amd64/usr/local/bin/
+          mv build/bin/jetbrains build/linux/jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }}/usr/local/bin/
           cd build/linux
-          mv jetbrains_0.0.0_amd64 "jetbrains_${{ steps.normalise_version.outputs.version }}_amd64"
-          sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "jetbrains_${{ steps.normalise_version.outputs.version }}_amd64/DEBIAN/control"
-          dpkg-deb --build -Zxz "jetbrains_${{ steps.normalise_version.outputs.version }}_amd64"
+          mv jetbrains_0.0.0_${{ steps.normalise_platform_arch.outputs.deb_arch }} "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}"
+          sed -i 's/0.0.0/${{ steps.normalise_version.outputs.version }}/g' "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}/DEBIAN/control"
+          dpkg-deb --build -Zxz "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}"
 
       - name: Package up appimage file
         run: |
@@ -143,7 +145,7 @@ jobs:
 
 
           mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
-          build_dir="build/linux/jetbrains_${{ steps.normalise_version.outputs.version }}_amd64"
+          build_dir="build/linux/jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}"
 
           cp -r $build_dir/usr/share/icons/hicolor/512x512/apps/jetbrains.png AppDir/usr/share/icons/hicolor/512x512/apps/
           cp $build_dir/usr/local/bin/jetbrains AppDir/usr/bin/
@@ -166,7 +168,7 @@ jobs:
 
       - name: Rename deb
         working-directory: ./build/linux
-        run: mv "jetbrains_${{ steps.normalise_version.outputs.version }}_amd64.deb" "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.deb"
+        run: mv "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform_arch.outputs.deb_arch }}.deb" "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.deb"
 
       - name: Rename appimage
         run: mv jetbrains-${{ steps.normalise_platform_arch.outputs.arch }}.AppImage "jetbrains_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.AppImage"
