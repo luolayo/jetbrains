@@ -55,11 +55,11 @@ func GetAppDataDir() string {
 	var appDataDir string
 	switch global.OS {
 	case "windows":
-		appDataDir = filepath.Join(global.UserHome, "AppData", "Roaming", "Jetbrains")
+		appDataDir = filepath.Join(global.UserHome, "AppData", "Roaming", "JetBrains")
 	case "darwin":
-		appDataDir = filepath.Join(global.UserHome, "Library", "Application Support", "Jetbrains")
+		appDataDir = filepath.Join(global.UserHome, "Library", "Application Support", "JetBrains")
 	case "linux":
-		appDataDir = filepath.Join(global.UserHome, ".config", "share", "Jetbrains")
+		appDataDir = filepath.Join(global.UserHome, ".config", "share", "JetBrains")
 	default:
 		appDataDir = filepath.Join(global.UserHome, ".Jetbrains")
 	}
@@ -71,11 +71,11 @@ func GetConfigDir() string {
 	var configDir string
 	switch global.OS {
 	case "windows":
-		configDir = filepath.Join(global.UserHome, "AppData", "Local", "Jetbrains")
+		configDir = filepath.Join(global.UserHome, "AppData", "Local", "JetBrains")
 	case "darwin":
-		configDir = filepath.Join(global.UserHome, "Library", "Caches", "Jetbrains")
+		configDir = filepath.Join(global.UserHome, "Library", "Caches", "JetBrains")
 	case "linux":
-		configDir = filepath.Join(global.UserHome, ".cache", "Jetbrains")
+		configDir = filepath.Join(global.UserHome, ".cache", "JetBrains")
 	default:
 		configDir = filepath.Join(global.UserHome, ".Jetbrains")
 	}
