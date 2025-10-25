@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   release:
@@ -71,6 +72,11 @@ jobs:
         with:
           node-version: 20
 
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3
+        with:
+          cosign-release: 'v2.2.4'
+
       - name: Build frontend assets
         shell: bash
         run: |
@@ -89,6 +95,13 @@ jobs:
           -webview2 embed \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.WINDOWS_GA_SECRET }}"
 
+      - name: Sign portable binary with Sigstore
+        shell: bash
+        run: |
+          cosign sign-blob --yes \
+            --bundle ./build/bin/jetbrains.exe.bundle \
+            ./build/bin/jetbrains.exe
+
       - name: Compress portable binary
         working-directory: ./build/bin
         run: Compress-Archive "jetbrains.exe" "jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip"
@@ -97,7 +110,9 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.normalise_version.outputs.version }}
-          files: ./build/bin/jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip
+          files: |
+            ./build/bin/jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip
+            ./build/bin/jetbrains.exe.bundle
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Windows NSIS installer
@@ -115,13 +130,26 @@ jobs:
       #     password: ${{ secrets.WIN_SIGNING_CERT_PASSWORD }}
       #     folder: ./build/bin
 
+      - name: Sign installer with Sigstore
+        shell: bash
+        run: |
+          cosign sign-blob --yes \
+            --bundle ./build/bin/jetbrains-installer.exe.bundle \
+            ./build/bin/jetbrains.exe
+
       - name: Rename installer
         working-directory: ./build/bin
         run: Rename-Item -Path "jetbrains.exe" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe"
+
+      - name: Rename installer signature bundle
+        working-directory: ./build/bin
+        run: Rename-Item -Path "jetbrains-installer.exe.bundle" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe.bundle"
 
       - name: Upload release asset (Installer)
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.normalise_version.outputs.version }}
-          files: ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe
+          files: |
+            ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe
+            ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe.bundle
           token: ${{ secrets.GITHUB_TOKEN }}
