@@ -66,6 +66,10 @@ jobs:
         shell: bash
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 
+      - name: Install garble
+        shell: bash
+        run: go install mvdan.cc/garble@latest
+
       - name: Install Ubuntu prerequisites
         shell: bash
         run: |
