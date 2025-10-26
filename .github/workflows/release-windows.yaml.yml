@@ -61,7 +61,18 @@ jobs:
       - name: Install chocolatey
         uses: crazy-max/ghaction-chocolatey@v2
         with:
-          args: install nsis jq
+          args: install nsis jq -y
+
+      - name: Add NSIS to PATH
+        shell: pwsh
+        run: |
+          echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "NSIS installed at: C:\Program Files (x86)\NSIS"
+          if (Test-Path "C:\Program Files (x86)\NSIS\makensis.exe") {
+            echo "makensis.exe found"
+          } else {
+            echo "Warning: makensis.exe not found at expected location"
+          }
 
       - name: Install wails
         shell: bash
