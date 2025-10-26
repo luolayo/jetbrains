@@ -22,7 +22,7 @@
   "garbleargs": "-tiny -literals -seed=random",
   "upx": false,
   "upxFlags": "",
-  "runNonNativeCGO": false,
+  "runNonNativeCGO": true,
   "windows": {
     "wailsjsdir": "./frontend",
     "assetdir": "./frontend/dist",
