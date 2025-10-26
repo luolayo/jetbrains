@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"jetbrains/global"
 	"os"
-	"os/exec"
 	"strings"
 
 	machinecode "github.com/super-l/machine-code"
@@ -102,54 +101,54 @@ func (a *App) GetDeviceID() DeviceInfo {
 	}
 }
 
-func getBIOSSerialNumber() (string, error) {
-	// 优先获取 UUID，如果失败则尝试主板序列号
-	cmd := exec.Command("powershell", "-Command",
-		"$cs = Get-CimInstance Win32_ComputerSystemProduct; "+
-			"if ($cs.UUID -and $cs.UUID -ne '00000000-0000-0000-0000-000000000000') { $cs.UUID } "+
-			"else { (Get-CimInstance Win32_BaseBoard | Select-Object -First 1).SerialNumber }")
-	output, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
-	}
-	result := strings.TrimSpace(string(output))
+//func getBIOSSerialNumber() (string, error) {
+//	// 优先获取 UUID，如果失败则尝试主板序列号
+//	cmd := exec.Command("powershell", "-WindowStyle", "Hidden", "-Command",
+//		"$cs = Get-CimInstance Win32_ComputerSystemProduct; "+
+//			"if ($cs.UUID -and $cs.UUID -ne '00000000-0000-0000-0000-000000000000') { $cs.UUID } "+
+//			"else { (Get-CimInstance Win32_BaseBoard | Select-Object -First 1).SerialNumber }")
+//	output, err := cmd.Output()
+//	if err != nil {
+//		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
+//	}
+//	result := strings.TrimSpace(string(output))
+//
+//	// 清理可能的多余空白和换行
+//	result = strings.ReplaceAll(result, "\r", "")
+//	result = strings.ReplaceAll(result, "\n", "")
+//
+//	return result, nil
+//}
 
-	// 清理可能的多余空白和换行
-	result = strings.ReplaceAll(result, "\r", "")
-	result = strings.ReplaceAll(result, "\n", "")
+//func getCPUSerialNumber() (string, error) {
+//	cmd := exec.Command("powershell", "-WindowStyle", "Hidden", "-Command",
+//		"Get-CimInstance Win32_Processor | Select-Object -First 1 -ExpandProperty ProcessorId")
+//	output, err := cmd.Output()
+//	if err != nil {
+//		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
+//	}
+//	return strings.TrimSpace(string(output)), nil
+//}
 
-	return result, nil
-}
+//func getDiskSerialNumber() (string, error) {
+//	cmd := exec.Command("powershell", "-WindowStyle", "Hidden", "-Command",
+//		"Get-CimInstance Win32_DiskDrive | Select-Object -First 1 -ExpandProperty SerialNumber")
+//	output, err := cmd.Output()
+//	if err != nil {
+//		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
+//	}
+//	return strings.TrimSpace(string(output)), nil
+//}
 
-func getCPUSerialNumber() (string, error) {
-	cmd := exec.Command("powershell", "-Command",
-		"Get-CimInstance Win32_Processor | Select-Object -First 1 -ExpandProperty ProcessorId")
-	output, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
-	}
-	return strings.TrimSpace(string(output)), nil
-}
-
-func getDiskSerialNumber() (string, error) {
-	cmd := exec.Command("powershell", "-Command",
-		"Get-CimInstance Win32_DiskDrive | Select-Object -First 1 -ExpandProperty SerialNumber")
-	output, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
-	}
-	return strings.TrimSpace(string(output)), nil
-}
-
-func getBoardSerialNumber() (string, error) {
-	cmd := exec.Command("powershell", "-Command",
-		"Get-CimInstance Win32_BaseBoard | Select-Object -First 1 -ExpandProperty SerialNumber")
-	output, err := cmd.Output()
-	if err != nil {
-		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
-	}
-	return strings.TrimSpace(string(output)), nil
-}
+//func getBoardSerialNumber() (string, error) {
+//	cmd := exec.Command("powershell", "-WindowStyle", "Hidden", "-Command",
+//		"Get-CimInstance Win32_BaseBoard | Select-Object -First 1 -ExpandProperty SerialNumber")
+//	output, err := cmd.Output()
+//	if err != nil {
+//		return "", fmt.Errorf("执行 PowerShell 命令失败: %v", err)
+//	}
+//	return strings.TrimSpace(string(output)), nil
+//}
 
 // GetLinuxMachineID 获取Linux机器ID（不需要root权限）
 // 优先读取 /etc/machine-id，如果失败则尝试 /var/lib/dbus/machine-id
