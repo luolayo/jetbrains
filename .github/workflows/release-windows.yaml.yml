@@ -133,10 +133,22 @@ jobs:
       - name: Build Windows NSIS installer
         shell: bash
         run: |
-          CGO_ENABLED=1 wails build -clean -platform ${{ matrix.platform }} \
+          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} \
           -nsis -webview2 embed \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }}" \
           -o jetbrains-installer
+
+      - name: Verify installer was created
+        shell: bash
+        run: |
+          echo "Listing build/bin directory:"
+          ls -la build/bin/
+          if [ -f "build/bin/jetbrains-installer.exe" ]; then
+            echo "✓ Installer found: build/bin/jetbrains-installer.exe"
+          else
+            echo "✗ Installer NOT found!"
+            exit 1
+          fi
 
       # Code signing disabled for personal project
       # - name: Sign the installer
