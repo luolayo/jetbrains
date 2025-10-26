@@ -118,9 +118,10 @@ jobs:
       - name: Build Windows NSIS installer
         shell: bash
         run: |
-          CGO_ENABLED=1 wails build -clean -platform ${{ matrix.platform }} -debug \
+          CGO_ENABLED=1 wails build -clean -platform ${{ matrix.platform }} \
           -nsis -webview2 embed \
-          -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }}"
+          -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }}" \
+          -o jetbrains-installer
 
       # Code signing disabled for personal project
       # - name: Sign the installer
@@ -135,11 +136,11 @@ jobs:
         run: |
           cosign sign-blob --yes \
             --bundle ./build/bin/jetbrains-installer.exe.bundle \
-            ./build/bin/jetbrains.exe
+            ./build/bin/jetbrains-installer.exe
 
       - name: Rename installer
         working-directory: ./build/bin
-        run: Rename-Item -Path "jetbrains.exe" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe"
+        run: Rename-Item -Path "jetbrains-installer.exe" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe"
 
       - name: Rename installer signature bundle
         working-directory: ./build/bin

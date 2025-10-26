@@ -88,7 +88,7 @@ jobs:
       - name: Build wails app for Linux
         shell: bash
         run: |
-          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} -debug \
+          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.LINUX_GA_SECRET }}" \
           -tags webkit2_41 \
           -o jetbrains

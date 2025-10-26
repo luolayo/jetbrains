@@ -71,6 +71,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.0-dev libfuse-dev libfuse2
+          if [ "${{ matrix.platform }}" == "linux/arm64" ]; then
+            sudo apt-get install -y gcc-aarch64-linux-gnu libc6-dev-arm64-cross
+          fi
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -91,7 +94,16 @@ jobs:
       - name: Build wails app for Linux
         shell: bash
         run: |
-          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} -debug \
+          if [ "${{ matrix.platform }}" == "linux/arm64" ]; then
+            export CC=aarch64-linux-gnu-gcc
+            export GOARCH=arm64
+            export GOOS=linux
+            export CGO_ENABLED=1
+            EXTRA_FLAGS="-skipbindings"
+          else
+            EXTRA_FLAGS=""
+          fi
+          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} $EXTRA_FLAGS \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.LINUX_GA_SECRET }}" \
           -o jetbrains
 

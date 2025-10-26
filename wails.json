@@ -18,8 +18,8 @@
     "comments": "JetBrains Application"
   },
   "nsisType": "multiple",
-  "obfuscated": false,
-  "garbleargs": "",
+  "obfuscated": true,
+  "garbleargs": "-tiny -literals -seed=random",
   "upx": false,
   "upxFlags": "",
   "runNonNativeCGO": false,
