@@ -143,10 +143,17 @@ jobs:
         run: |
           echo "Listing build/bin directory:"
           ls -la build/bin/
-          if [ -f "build/bin/jetbrains-installer.exe" ]; then
-            echo "✓ Installer found: build/bin/jetbrains-installer.exe"
+
+          # Wails adds architecture suffix to installer filename
+          ARCH="${{ steps.normalise_platform_name.outputs.pname }}"
+          INSTALLER_NAME="jetbrains-${ARCH}-installer.exe"
+
+          if [ -f "build/bin/${INSTALLER_NAME}" ]; then
+            echo "✓ Installer found: build/bin/${INSTALLER_NAME}"
+            # Rename to expected name for signing
+            mv "build/bin/${INSTALLER_NAME}" "build/bin/jetbrains-installer.exe"
           else
-            echo "✗ Installer NOT found!"
+            echo "✗ Installer NOT found! Expected: ${INSTALLER_NAME}"
             exit 1
           fi
 
