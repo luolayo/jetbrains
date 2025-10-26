@@ -75,8 +75,15 @@ jobs:
         run: |
           sudo apt-get update
           if [ "${{ matrix.platform }}" == "linux/arm64" ]; then
-            # Enable ARM64 architecture and install cross-compilation toolchain
+            # Enable ARM64 architecture
             sudo dpkg --add-architecture arm64
+
+            # Configure ARM64 repositories using Ubuntu Ports
+            sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-security main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/arm64.list
+
             sudo apt-get update
             sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
               libgtk-3-dev:arm64 libwebkit2gtk-4.0-dev:arm64 \
