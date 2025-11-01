@@ -142,34 +142,20 @@ jobs:
             exit 1
           fi
 
-      # Code signing disabled for personal project
-      # - name: Sign the installer
-      #   uses: dlemstra/code-sign-action@v1
-      #   with:
-      #     certificate: ${{ secrets.WIN_SIGNING_CERT }}
-      #     password: ${{ secrets.WIN_SIGNING_CERT_PASSWORD }}
-      #     folder: ./build/bin
-
-      - name: Sign installer with Sigstore
-        shell: bash
-        run: |
-          cosign sign-blob --yes \
-            --bundle ./build/bin/jetbrains-installer.exe.bundle \
-            ./build/bin/jetbrains-installer.exe
+      - name: Sign the installer
+        uses: dlemstra/code-sign-action@v1
+        with:
+          certificate: ${{ secrets.WIN_SIGNING_CERT }}
+          password: ${{ secrets.WIN_SIGNING_CERT_PASSWORD }}
+          folder: ./build/bin
 
       - name: Rename installer
         working-directory: ./build/bin
         run: Rename-Item -Path "jetbrains-installer.exe" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe"
 
-      - name: Rename installer signature bundle
-        working-directory: ./build/bin
-        run: Rename-Item -Path "jetbrains-installer.exe.bundle" -NewName "jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe.bundle"
-
       - name: Upload release asset (Installer)
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.normalise_version.outputs.version }}
-          files: |
-            ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe
-            ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe.bundle
+          files: ./build/bin/jetbrains_Setup_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.exe
           token: ${{ secrets.GITHUB_TOKEN }}
