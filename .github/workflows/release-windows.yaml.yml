@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: write
-  id-token: write
 
 jobs:
   release:
@@ -87,11 +86,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Cosign
-        uses: sigstore/cosign-installer@v3
-        with:
-          cosign-release: 'v2.2.4'
-
       - name: Build frontend assets
         shell: bash
         run: |
@@ -110,13 +104,6 @@ jobs:
           -webview2 embed \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }} -X main.gaMeasurementID=${{ secrets.GA_MEASUREMENT_ID }} -X main.gaSecretKey=${{ secrets.WINDOWS_GA_SECRET }}"
 
-      - name: Sign portable binary with Sigstore
-        shell: bash
-        run: |
-          cosign sign-blob --yes \
-            --bundle ./build/bin/jetbrains.exe.bundle \
-            ./build/bin/jetbrains.exe
-
       - name: Compress portable binary
         working-directory: ./build/bin
         run: Compress-Archive "jetbrains.exe" "jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip"
@@ -125,9 +112,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.normalise_version.outputs.version }}
-          files: |
-            ./build/bin/jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip
-            ./build/bin/jetbrains.exe.bundle
+          files: ./build/bin/jetbrains_Portable_${{ steps.normalise_version.outputs.version }}_${{ steps.normalise_platform.outputs.tag }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Windows NSIS installer
