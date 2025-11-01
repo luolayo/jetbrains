@@ -118,7 +118,7 @@ jobs:
       - name: Build Windows NSIS installer
         shell: bash
         run: |
-          CGO_ENABLED=1 wails build -platform ${{ matrix.platform }} \
+          CGO_ENABLED=1 wails build -obfuscated -platform ${{ matrix.platform }} \
           -nsis -webview2 embed \
           -ldflags "-X main.version=v${{ steps.normalise_version.outputs.version }}" \
           -o jetbrains-installer
