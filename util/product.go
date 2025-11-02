@@ -263,6 +263,53 @@ func RemoveEnvOther() error {
 	return nil
 }
 
+// RemoveEnvOtherWindows Windows 移除所有以 _VM_OPTIONS 结尾的环境变量
+func RemoveEnvOtherWindows() error {
+	// 获取所有环境变量
+	envVars := os.Environ()
+	var vmOptionsVars []string
+
+	for _, env := range envVars {
+		parts := strings.SplitN(env, "=", 2)
+		if len(parts) != 2 {
+			continue
+		}
+		envName := parts[0]
+		if strings.HasSuffix(envName, "_VM_OPTIONS") {
+			vmOptionsVars = append(vmOptionsVars, envName)
+		}
+	}
+
+	if len(vmOptionsVars) == 0 {
+		fmt.Println("未找到任何以 _VM_OPTIONS 结尾的环境变量")
+		return nil
+	}
+
+	fmt.Printf("找到 %d 个 _VM_OPTIONS 环境变量，准备删除...\n", len(vmOptionsVars))
+
+	// 删除用户环境变量
+	for _, envName := range vmOptionsVars {
+		cmd := exec.Command("reg", "delete", "HKCU\\Environment", "/v", envName, "/f")
+		if err := cmd.Run(); err != nil {
+			fmt.Printf("warning: 删除用户环境变量 %s 失败: %v\n", envName, err)
+		} else {
+			fmt.Printf("已删除用户环境变量: %s\n", envName)
+		}
+	}
+
+	// 删除系统环境变量
+	for _, envName := range vmOptionsVars {
+		cmd := exec.Command("reg", "delete", "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", "/v", envName, "/f")
+		if err := cmd.Run(); err != nil {
+			fmt.Printf("warning: 删除系统环境变量 %s 失败（需要管理员权限）: %v\n", envName, err)
+		} else {
+			fmt.Printf("已删除系统环境变量: %s\n", envName)
+		}
+	}
+	fmt.Println("清理 Windows 环境变量完成")
+	return nil
+}
+
 // removeLinesContaining 读取 `filePath`，删除包含 `substr` 的行并写回，若无变化则不修改文件。
 func removeLinesContaining(filePath, substr string) error {
 	data, err := os.ReadFile(filePath)

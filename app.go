@@ -64,6 +64,9 @@ func (a *App) Clean() string {
 	switch global.OS {
 	case "darwin", "linux":
 		_ = util.RemoveEnvOther()
+	case "windows":
+		_ = util.RemoveEnvOtherWindows()
+
 	default:
 	}
 

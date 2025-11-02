@@ -26,8 +26,9 @@ func (a *ActionsType) Actions() ActionsType {
 	switch global.OS {
 	case "darwin", "linux":
 		_ = RemoveEnvOther()
+	case "windows":
+		_ = RemoveEnvOtherWindows()
 	default:
-		// Windows 不需要移除其他环境变量
 	}
 	err := ReadAllJetbrainsProducts()
 	if err != nil {
