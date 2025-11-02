@@ -215,7 +215,7 @@
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-slate-900 mb-1 truncate">{{ software.productName }}</h3>
+                <h3 class="font-semibold text-slate-900 mb-1 truncate">{{ software.productName }} - {{software.prodcutVersion}}</h3>
                 <div class="flex items-center gap-2 mb-1">
                   <span :class="[
                     'px-2 py-0.5 rounded-md text-xs font-semibold',
@@ -452,6 +452,7 @@ const startActivation = async () => {
         activatedSoftwareList.value = ActionsData.product.map((item: { productName: string;
           productVersion: string}) => ({
           productName: item.productName,
+          prodcutVersion: item.productVersion,
           time: getTimestamp(),
           status: 'success'
         }))
