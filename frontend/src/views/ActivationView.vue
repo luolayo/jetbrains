@@ -345,6 +345,7 @@ import {Actions, CopyText, DownloadAndExtract} from '../../wailsjs/go/main/App'
 
 interface ActivatedSoftware {
   productName: string
+  prodcutVersion?: string
   time: string
   status: 'success' | 'failed'
 }
