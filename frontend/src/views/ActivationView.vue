@@ -307,10 +307,10 @@
               <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
                 <h4 class="font-semibold text-red-900 mb-2">可能的原因：</h4>
                 <ul class="space-y-1 text-sm text-red-700">
-                  <li>软件没有安装</li>
-                  <li>win 被杀毒拦截没有权限</li>
+                  <li>软件安装后开机后没有打开过，读取不到配置目录</li>
+                  <li>win如果打开了软件，请把所有软件关掉再重启工具</li>
                   <li>mac 没有给磁盘权限</li>
-                  <li>激活失败大概率是读取不到文件夹，没有文件夹权限</li>
+                  <li>激活失败大概率是读取不到文件夹，没有文件夹权限，被杀毒拦截等，如果关闭杀毒或者按照上述操作还是不行，请去教程里的问题列表查找问题和解决办法</li>
                 </ul>
               </div>
 
@@ -413,7 +413,7 @@ const startActivation = async () => {
     if (data.code !== 200) {
       activationResult.value = {
         status: 'failed',
-        errorMessage: data.message || '未知错误，请稍后重试'
+        errorMessage: data.message || '设备校验失败，请稍后重试'
       }
       isActivating.value = false
       showResultModal.value = true
@@ -474,7 +474,7 @@ const startActivation = async () => {
     console.error('激活失败:', error)
     activationResult.value = {
       status: 'failed',
-      errorMessage: error instanceof Error ? error.message : '未知错误，请稍后重试'
+      errorMessage: error instanceof Error ? error.message : '请把所有jetbrains关闭后重启工具再重试'
     }
     showResultModal.value = true
     isActivating.value = false
