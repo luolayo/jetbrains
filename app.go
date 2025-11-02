@@ -23,7 +23,6 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-
 	// 初始化全局路径变量
 	if err := util.InitGlobalPaths(); err != nil {
 		fmt.Printf("初始化全局路径失败: %v\n", err)

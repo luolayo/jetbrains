@@ -413,7 +413,7 @@ func ActivateJetbrainsProduct(productDir string, productName string, productDirN
 func AppendVmoptionsForActivation(vmoptionsPath string) error {
 	// 检测 vmoptions 文件是否存在
 	if _, err := os.Stat(vmoptionsPath); os.IsNotExist(err) {
-		fmt.Println("vmoptions 文件不存在: %s", vmoptionsPath)
+		fmt.Printf("vmoptions 文件不存在: %s", vmoptionsPath)
 		return nil
 	}
 	// 拼接激活参数
