@@ -130,7 +130,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
           </svg>
-          下载软件(暂不可用，等待更新)
+          下载软件(内测中，有问题及时反馈)
         </button>
 
         <button

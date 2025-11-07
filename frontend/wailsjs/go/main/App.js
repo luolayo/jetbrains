@@ -18,10 +18,30 @@ export function DownloadAndExtract(arg1, arg2) {
   return window['go']['main']['App']['DownloadAndExtract'](arg1, arg2);
 }
 
+export function DownloadAndInstall(arg1, arg2, arg3) {
+  return window['go']['main']['App']['DownloadAndInstall'](arg1, arg2, arg3);
+}
+
+export function DownloadFile(arg1, arg2) {
+  return window['go']['main']['App']['DownloadFile'](arg1, arg2);
+}
+
 export function GetDeviceID() {
   return window['go']['main']['App']['GetDeviceID']();
 }
 
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
+}
+
+export function InstallFile(arg1, arg2) {
+  return window['go']['main']['App']['InstallFile'](arg1, arg2);
+}
+
+export function SelectDirectory() {
+  return window['go']['main']['App']['SelectDirectory']();
+}
+
+export function SelectFile() {
+  return window['go']['main']['App']['SelectFile']();
 }

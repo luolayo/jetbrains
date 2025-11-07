@@ -10,6 +10,16 @@ export function CopyText():Promise<string>;
 
 export function DownloadAndExtract(arg1:Array<number>,arg2:string):Promise<void>;
 
+export function DownloadAndInstall(arg1:string,arg2:string,arg3:string):Promise<void>;
+
+export function DownloadFile(arg1:string,arg2:string):Promise<void>;
+
 export function GetDeviceID():Promise<util.DeviceInfo>;
 
 export function Greet(arg1:string):Promise<string>;
+
+export function InstallFile(arg1:string,arg2:string):Promise<void>;
+
+export function SelectDirectory():Promise<string>;
+
+export function SelectFile():Promise<string>;
