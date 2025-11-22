@@ -243,9 +243,7 @@ func (a *App) InstallFile(filePath string, installDir string) error {
 
 // CheckPermissions 检查并请求必要的权限（macOS）
 func (a *App) CheckPermissions() bool {
-	_, err := os.ReadDir("~/Library/Containers")
-	// 如果没有权限就请求权限
-	if err != nil {
-	}
+	_, err := os.ReadDir(filepath.Join(global.UserHome, "Library", "Containers"))
+
 	return err == nil
 }
