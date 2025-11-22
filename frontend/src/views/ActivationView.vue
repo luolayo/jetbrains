@@ -47,7 +47,7 @@
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                <span>windows请右键以管理员权限运行，macos请查看问题列表根据教程给予权限</span>
+                <span>只支持21年及以后的版本，之前的版本不支持，请关闭需要激活的软件</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -66,9 +66,9 @@
         </div>
       </div>
 
-      <!-- 版本选择区域 -->
+      <!-- 激活类型选择区域 -->
       <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">选择版本类型</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">选择激活类型</h2>
 
         <!-- 提示信息 -->
         <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-4">
@@ -77,22 +77,23 @@
               <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
             </svg>
             <div class="flex-1">
-              <p class="text-sm font-medium text-amber-900 mb-1">版本选择说明</p>
+              <p class="text-sm font-medium text-amber-900 mb-1">提醒</p>
               <p class="text-sm text-amber-800">
-                如果您电脑安装了低版本请选择低版本，如果您电脑全是最新版请选择高版本。<br>
-                <strong>2024年及以后版本为高版本，2024年以前版本为低版本。</strong>
+                <strong>软件本体激活：</strong>激活 JetBrains 软件（IDEA、WebStorm 等）<br>
+                <strong>插件激活：</strong>激活插件，输入插件名称即可获取激活码 <br>
+                <strong>插件激活需要先使用本根据激活软件本体才能激活插件，否则无法激活，激活后不保证能否使用</strong>
               </p>
             </div>
           </div>
         </div>
 
-        <!-- 版本选项 -->
+        <!-- 激活类型选项 -->
         <div class="grid md:grid-cols-2 gap-4">
           <button
-            @click="selectedVersion = 'high'"
+            @click="activationType = 'software'"
             :class="[
               'p-5 rounded-xl border-2 transition-all text-left',
-              selectedVersion === 'high'
+              activationType === 'software'
                 ? 'border-blue-500 bg-blue-50 shadow-md'
                 : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
             ]"
@@ -100,16 +101,16 @@
             <div class="flex items-start gap-3">
               <div :class="[
                 'w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5',
-                selectedVersion === 'high' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
+                activationType === 'software' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
               ]">
-                <div v-if="selectedVersion === 'high'" class="w-2.5 h-2.5 bg-white rounded-full"></div>
+                <div v-if="activationType === 'software'" class="w-2.5 h-2.5 bg-white rounded-full"></div>
               </div>
               <div class="flex-1">
-                <h3 class="font-semibold text-slate-900 mb-1">高版本</h3>
-                <p class="text-sm text-slate-600">适用于 2024 年及以后发布的版本</p>
+                <h3 class="font-semibold text-slate-900 mb-1">软件本体激活</h3>
+                <p class="text-sm text-slate-600">激活 JetBrains 全系软件</p>
                 <div class="mt-2 flex items-center gap-1.5">
                   <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
-                    2024+
+                    IDEA/WebStorm/PyCharm等
                   </span>
                 </div>
               </div>
@@ -117,10 +118,10 @@
           </button>
 
           <button
-            @click="selectedVersion = 'low'"
+            @click="activationType = 'plugin'"
             :class="[
               'p-5 rounded-xl border-2 transition-all text-left',
-              selectedVersion === 'low'
+              activationType === 'plugin'
                 ? 'border-blue-500 bg-blue-50 shadow-md'
                 : 'border-slate-200 hover:border-slate-300 hover:shadow-sm'
             ]"
@@ -128,21 +129,34 @@
             <div class="flex items-start gap-3">
               <div :class="[
                 'w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5',
-                selectedVersion === 'low' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
+                activationType === 'plugin' ? 'border-blue-500 bg-blue-500' : 'border-slate-300'
               ]">
-                <div v-if="selectedVersion === 'low'" class="w-2.5 h-2.5 bg-white rounded-full"></div>
+                <div v-if="activationType === 'plugin'" class="w-2.5 h-2.5 bg-white rounded-full"></div>
               </div>
               <div class="flex-1">
-                <h3 class="font-semibold text-slate-900 mb-1">低版本</h3>
-                <p class="text-sm text-slate-600">适用于 2024 年以前发布的版本</p>
+                <h3 class="font-semibold text-slate-900 mb-1">插件激活</h3>
+                <p class="text-sm text-slate-600">输入插件名称获取激活码</p>
                 <div class="mt-2 flex items-center gap-1.5">
-                  <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded-full font-medium">
-                    2023 及更早
+                  <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                    插件专用
                   </span>
                 </div>
               </div>
             </div>
           </button>
+        </div>
+
+        <!-- 插件名称输入框 (仅在选择插件激活时显示) -->
+        <div v-if="activationType === 'plugin'" class="mt-4">
+          <label class="block text-sm font-semibold text-slate-900 mb-2">插件名称</label>
+          <input
+            v-model="pluginName"
+            type="text"
+            placeholder="请输入插件名称，例如：MyBatis Plugin"
+            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+            @keyup.enter="searchPlugin"
+          />
+          <p class="mt-2 text-xs text-slate-500">按 Enter 键搜索插件</p>
         </div>
       </div>
 
@@ -150,26 +164,42 @@
       <div class="bg-white rounded-2xl shadow-sm p-8 mb-6">
         <div class="text-center">
           <div class="mb-6">
-            <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div :class="[
+              'w-20 h-20 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg',
+              activationType === 'plugin'
+                ? 'bg-gradient-to-br from-purple-500 to-purple-600'
+                : 'bg-gradient-to-br from-blue-500 to-indigo-600'
+            ]">
+              <svg v-if="activationType === 'software'" class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
               </svg>
+              <svg v-else class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+              </svg>
             </div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-2">准备激活</h2>
-            <p class="text-slate-600">点击下方按钮开始激活您的 JetBrains 产品</p>
+            <h2 class="text-2xl font-bold text-slate-900 mb-2">
+              {{ activationType === 'plugin' ? '准备获取插件激活码' : '准备激活' }}
+            </h2>
+            <p class="text-slate-600">
+              {{ activationType === 'plugin' ? '点击下方按钮搜索插件并获取激活码' : '点击下方按钮开始激活您的 JetBrains 产品' }}
+            </p>
           </div>
 
           <button
             @click="startActivation"
-            :disabled="isActivating"
+            :disabled="isActivating || (activationType === 'plugin' && !pluginName.trim())"
             :class="[
               'px-8 py-4 rounded-xl font-semibold text-lg transition-all shadow-lg',
-              isActivating
+              isActivating || (activationType === 'plugin' && !pluginName.trim())
                 ? 'bg-slate-400 cursor-not-allowed'
-                : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white hover:shadow-xl transform hover:scale-105'
+                : activationType === 'plugin'
+                  ? 'bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white hover:shadow-xl transform hover:scale-105'
+                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white hover:shadow-xl transform hover:scale-105'
             ]"
           >
-            <span v-if="!isActivating">立即激活</span>
+            <span v-if="!isActivating">
+              {{ activationType === 'plugin' ? '搜索插件' : '立即激活' }}
+            </span>
             <span v-else class="flex items-center justify-center gap-3">
               <svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -178,11 +208,16 @@
               {{ activationProgress }}
             </span>
           </button>
+
+          <!-- 插件激活时的提示 -->
+          <p v-if="activationType === 'plugin' && !pluginName.trim()" class="mt-3 text-sm text-slate-500">
+            请先输入插件名称
+          </p>
         </div>
       </div>
 
       <!-- 激活信息 -->
-      <div class="bg-white rounded-2xl shadow-sm p-6">
+      <div v-if="activationType === 'software'" class="bg-white rounded-2xl shadow-sm p-6 mb-6">
         <h2 class="text-lg font-semibold text-slate-900 mb-4">已激活软件</h2>
         <div v-if="activatedSoftwareList.length === 0" class="text-center py-8 text-slate-500">
           <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,6 +264,56 @@
           </div>
         </div>
       </div>
+
+      <!-- 已激活插件列表 -->
+      <div v-if="activationType === 'plugin'" class="bg-white rounded-2xl shadow-sm p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">已激活插件</h2>
+        <div v-if="activatedPluginList.length === 0" class="text-center py-8 text-slate-500">
+          <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+          </svg>
+          <p>暂无已激活插件</p>
+        </div>
+        <div v-else class="grid md:grid-cols-2 gap-4">
+          <!-- 每个插件一个独立卡片 -->
+          <div
+            v-for="(plugin, index) in activatedPluginList"
+            :key="index"
+            :class="[
+              'p-4 border-2 rounded-xl transition-all',
+              plugin.status === 'success'
+                ? 'border-purple-200 bg-purple-50 hover:shadow-md'
+                : 'border-red-200 bg-red-50'
+            ]"
+          >
+            <div class="flex items-start gap-3">
+              <div :class="[
+                'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
+                plugin.status === 'success' ? 'bg-purple-100' : 'bg-red-100'
+              ]">
+                <svg v-if="plugin.status === 'success'" class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                </svg>
+                <svg v-else class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="font-semibold text-slate-900 mb-1 truncate">{{ plugin.productName }}</h3>
+                <div class="flex items-center gap-2 mb-1">
+                  <span :class="[
+                    'px-2 py-0.5 rounded-md text-xs font-semibold',
+                    plugin.status === 'success' ? 'bg-purple-600 text-white' : 'bg-red-600 text-white'
+                  ]">
+                    {{ plugin.status === 'success' ? '激活成功' : '激活失败' }}
+                  </span>
+                  <span class="text-xs text-slate-500">{{ plugin.time }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- 激活结果弹窗 -->
@@ -260,21 +345,38 @@
           >
             <!-- 成功状态 -->
             <div v-if="activationResult.status === 'success'" class="text-center">
-              <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <div :class="[
+                'w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4',
+                activationType === 'plugin' ? 'bg-purple-100' : 'bg-green-100'
+              ]">
+                <svg v-if="activationType === 'software'" class="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
+                <svg v-else class="w-10 h-10 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                </svg>
               </div>
-              <h3 class="text-2xl font-bold text-slate-900 mb-2">激活成功！</h3>
-              <p class="text-slate-600 mb-6">请将激活码复制到软件里即可成功激活</p>
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">
+                {{ activationType === 'plugin' ? '获取成功！' : '激活成功！' }}
+              </h3>
+              <p class="text-slate-600 mb-6">
+                {{ activationType === 'plugin' ? '插件激活码已生成，请复制使用' : '请将激活码复制到软件里即可成功激活' }}
+              </p>
 
               <!-- 激活码文本域 -->
               <div class="bg-slate-50 rounded-xl p-4 mb-6 text-left">
                 <div class="flex items-center justify-between mb-2">
-                  <h4 class="text-sm font-semibold text-slate-900">激活码</h4>
+                  <h4 class="text-sm font-semibold text-slate-900">
+                    {{ activationType === 'plugin' ? '插件激活码' : '激活码' }}
+                  </h4>
                   <button
                     @click="copyActivationCode"
-                    class="text-xs bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition-colors"
+                    :class="[
+                      'text-xs text-white px-3 py-1 rounded-md transition-colors',
+                      activationType === 'plugin'
+                        ? 'bg-purple-600 hover:bg-purple-700'
+                        : 'bg-blue-600 hover:bg-blue-700'
+                    ]"
                   >
                     复制
                   </button>
@@ -288,7 +390,12 @@
 
               <button
                 @click="closeModal"
-                class="w-full py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors"
+                :class="[
+                  'w-full py-3 text-white rounded-xl font-semibold transition-colors',
+                  activationType === 'plugin'
+                    ? 'bg-purple-600 hover:bg-purple-700'
+                    : 'bg-green-600 hover:bg-green-700'
+                ]"
               >
                 完成
               </button>
@@ -301,16 +408,30 @@
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
                 </svg>
               </div>
-              <h3 class="text-2xl font-bold text-slate-900 mb-2">激活失败</h3>
+              <h3 class="text-2xl font-bold text-slate-900 mb-2">
+                {{ activationType === 'plugin' ? '获取失败' : '激活失败' }}
+              </h3>
               <p class="text-slate-600 mb-6">{{ activationResult.errorMessage }}</p>
 
-              <div class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
+              <!-- 软件激活失败的原因提示 -->
+              <div v-if="activationType === 'software'" class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
                 <h4 class="font-semibold text-red-900 mb-2">可能的原因：</h4>
                 <ul class="space-y-1 text-sm text-red-700">
                   <li>软件安装后开机后没有打开过，读取不到配置目录</li>
                   <li>win如果打开了软件，请把所有软件关掉再重启工具</li>
                   <li>mac 没有给磁盘权限</li>
                   <li>激活失败大概率是读取不到文件夹，没有文件夹权限，被杀毒拦截等，如果关闭杀毒或者按照上述操作还是不行，请去教程里的问题列表查找问题和解决办法</li>
+                </ul>
+              </div>
+
+              <!-- 插件激活失败的原因提示 -->
+              <div v-else class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
+                <h4 class="font-semibold text-red-900 mb-2">可能的原因：</h4>
+                <ul class="space-y-1 text-sm text-red-700">
+                  <li>插件名称输入错误或不存在</li>
+                  <li>该插件不需要激活</li>
+                  <li>插件库中暂无此插件的激活信息</li>
+                  <li>请检查插件名称是否正确</li>
                 </ul>
               </div>
 
@@ -323,7 +444,12 @@
                 </button>
                 <button
                   @click="retryActivation"
-                  class="flex-1 py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors"
+                  :class="[
+                    'flex-1 py-3 text-white rounded-xl font-semibold transition-colors',
+                    activationType === 'plugin'
+                      ? 'bg-purple-600 hover:bg-purple-700'
+                      : 'bg-blue-600 hover:bg-blue-700'
+                  ]"
                 >
                   重试
                 </button>
@@ -338,7 +464,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import {Download, Verification} from "../api";
+import {Download, Verification, getConde} from "../api";
 import {useDrvice} from "../store/useDrvice";
 import {decrypt} from "../util/crypt";
 import {Actions, CopyText, DownloadAndExtract} from '../../wailsjs/go/main/App'
@@ -360,11 +486,14 @@ interface ActivationResult {
 const drive = useDrvice()
 
 // 状态
+const activationType = ref<'software' | 'plugin'>('software') // 激活类型：软件或插件
+const pluginName = ref('') // 插件名称
 const selectedVersion = ref<'high' | 'low'>('high')
 const isActivating = ref(false)
 const activationProgress = ref('正在连接服务器...')
 const showResultModal = ref(false)
 const activatedSoftwareList = ref<ActivatedSoftware[]>([])
+const activatedPluginList = ref<ActivatedSoftware[]>([]) // 已激活插件列表
 const activationResult = ref<ActivationResult>({ status: 'success' })
 
 // 生成时间戳
@@ -392,12 +521,30 @@ const copyActivationCode = async () => {
   }
 }
 
-// 开始激活
+// 搜索插件
+const searchPlugin = async () => {
+  if (!pluginName.value.trim()) {
+    alert('请输入插件名称')
+    return
+  }
+  // 如果选择的是插件激活，直接触发激活
+  await startActivation()
+}
+
+// 开始激活（统一入口）
 const startActivation = async () => {
+  if (activationType.value === 'plugin') {
+    await startPluginActivation()
+  } else {
+    await startSoftwareActivation()
+  }
+}
+
+// 软件激活
+const startSoftwareActivation = async () => {
   isActivating.value = true
   showResultModal.value = false
 
-  // 模拟激活过程
   const steps = [
     '正在连接服务器...',
     '正在验证设备信息...',
@@ -421,6 +568,7 @@ const startActivation = async () => {
       return
     }
 
+    // 软件激活逻辑
     activationProgress.value = steps[2]
     const version = selectedVersion.value === 'high' ? 'new' : 'old'
     const resultDown = await Download(drive.drviceInfo.uuid, drive.drviceInfo.mac, version)
@@ -457,7 +605,6 @@ const startActivation = async () => {
           time: getTimestamp(),
           status: 'success'
         }))
-
       }
 
       showResultModal.value = true
@@ -472,10 +619,68 @@ const startActivation = async () => {
       isActivating.value = false
     }
   } catch (error) {
-    console.error('激活失败:', error)
+    console.error('软件激活失败:', error)
     activationResult.value = {
       status: 'failed',
       errorMessage: error instanceof Error ? error.message : '请把所有jetbrains关闭后重启工具再重试'
+    }
+    showResultModal.value = true
+    isActivating.value = false
+  }
+}
+
+// 插件激活
+const startPluginActivation = async () => {
+  // 检查插件名称
+  if (!pluginName.value.trim()) {
+    alert('请输入插件名称')
+    return
+  }
+
+  isActivating.value = true
+  showResultModal.value = false
+
+  const steps = [
+    '正在连接服务器...',
+    '正在搜索插件...',
+    '正在获取激活码...'
+  ]
+
+  try {
+    activationProgress.value = steps[0]
+    activationProgress.value = steps[1]
+    const res = await getConde(pluginName.value.trim())
+    if (res.code !== 200) {
+      activationResult.value = {
+        status: 'failed',
+        errorMessage:  res.message || '获取插件激活码失败，请稍后重试'
+      }
+      showResultModal.value = true
+      isActivating.value = false
+      return
+    }
+    activationProgress.value = steps[2]
+
+    // 激活成功
+    activationResult.value = {
+      status: 'success',
+      activationCode: res.data
+    }
+
+    // 添加到已激活插件列表
+    activatedPluginList.value.push({
+      productName: pluginName.value.trim(),
+      prodcutVersion: '',
+      time: getTimestamp(),
+      status: 'success'
+    })
+
+    showResultModal.value = true
+    isActivating.value = false
+  } catch (error) {
+    activationResult.value = {
+      status: 'failed',
+      errorMessage: error instanceof Error ? error.message : '获取插件激活码失败，请稍后重试'
     }
     showResultModal.value = true
     isActivating.value = false

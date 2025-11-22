@@ -6,6 +6,10 @@ export function Actions() {
   return window['go']['main']['App']['Actions']();
 }
 
+export function CheckPermissions() {
+  return window['go']['main']['App']['CheckPermissions']();
+}
+
 export function Clean() {
   return window['go']['main']['App']['Clean']();
 }

@@ -4,6 +4,8 @@ import {util} from '../models';
 
 export function Actions():Promise<util.ActionsType>;
 
+export function CheckPermissions():Promise<boolean>;
+
 export function Clean():Promise<string>;
 
 export function CopyText():Promise<string>;

@@ -2,11 +2,24 @@
 import {useDrvice} from "./store/useDrvice";
 import {ref, onMounted} from "vue";
 import {ElMessageBox,ElMessage} from "element-plus";
+import {CheckPermissions} from "../wailsjs/go/main/App";
+import router from "./router";
 
 const drviceStore = useDrvice();
 const isLoading = ref(true);
 
+const MacOSCheck = async () => {
+  const userAgent = navigator.userAgent.toLowerCase()
+ if (userAgent.includes('mac')) {
+   const falg = await CheckPermissions()
+   if (!falg) {
+     await router.push("/getPermission");
+   }
+ }
+}
+
 onMounted(async () => {
+  await MacOSCheck()
   try {
     await Promise.all([
       drviceStore.getDrviceInfo(),

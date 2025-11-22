@@ -240,3 +240,12 @@ func (a *App) InstallFile(filePath string, installDir string) error {
 
 	return nil
 }
+
+// CheckPermissions 检查并请求必要的权限（macOS）
+func (a *App) CheckPermissions() bool {
+	_, err := os.ReadDir("~/Library/Containers")
+	// 如果没有权限就请求权限
+	if err != nil {
+	}
+	return err == nil
+}

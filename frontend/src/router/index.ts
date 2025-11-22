@@ -9,6 +9,7 @@ const router = createRouter({
     },
         {path: '/download', name: 'Download', component: () => import('../views/DownloadView.vue')},
         {path: '/activation', name: 'Activation', component: () => import('../views/ActivationView.vue')},
+        {path: '/getPermission', name: 'GetPermission', component: () => import('../views/MacGetPermission.vue')},
     ],
 })
 
