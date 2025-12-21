@@ -459,12 +459,156 @@
         </transition>
       </div>
     </transition>
+
+    <!-- 激活流程引导弹窗 -->
+    <transition
+      enter-active-class="transition ease-out duration-200"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-150"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="showGuideModal"
+        class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center p-4 z-50"
+      >
+        <transition
+          enter-active-class="transition ease-out duration-200"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition ease-in duration-150"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div
+            v-if="showGuideModal"
+            class="bg-white rounded-2xl shadow-xl max-w-lg w-full border border-slate-200"
+            @click.stop
+          >
+            <!-- 头部 -->
+            <div class="px-6 py-5 border-b border-slate-200">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-xl font-bold text-slate-900">激活流程说明</h2>
+                  <p class="text-sm text-slate-500 mt-1">请按以下步骤操作以确保激活成功</p>
+                </div>
+                <button
+                  @click="closeGuideModal"
+                  class="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-600"
+                >
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- 内容区 -->
+            <div class="px-6 py-5">
+              <!-- 步骤列表 -->
+              <div class="space-y-4">
+                <!-- 步骤1 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                  <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                        1
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-slate-900 mb-1">打开所有需要激活的软件并关闭</h3>
+                      <p class="text-sm text-slate-600 leading-relaxed">
+                        先启动一次您需要激活的 JetBrains 软件(如 IDEA、WebStorm 等),然后完全关闭它们。这一步是为了让工具能够读取软件的配置目录。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 步骤2 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                  <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                        2
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-slate-900 mb-1">点击激活按钮</h3>
+                      <p class="text-sm text-slate-600 leading-relaxed">
+                        在本页面选择"软件本体激活",然后点击"立即激活"按钮。等待激活过程完成,系统会自动处理相关配置。提示成功后，请查看下面的激活列表里面有没有显示你需要激活的软件和版本。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 步骤3 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                  <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                        3
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-slate-900 mb-1">重启需要激活的软件</h3>
+                      <p class="text-sm text-slate-600 leading-relaxed">
+                        激活完成后,重新启动您的 JetBrains 软件。首次启动时,软件会检测到新的激活配置
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 步骤4 -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                  <div class="flex gap-3">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                        4
+                      </div>
+                    </div>
+                    <div class="flex-1">
+                      <h3 class="font-semibold text-slate-900 mb-1">输入生成的激活码</h3>
+                      <p class="text-sm text-slate-600 leading-relaxed">
+                        在软件的激活窗口中,选择"Activation Code"方式,然后将系统生成的激活码粘贴进去,完成最终激活。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 额外提示 -->
+              <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
+                <div class="flex gap-2">
+                  <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                  </svg>
+                  <p class="text-xs text-amber-800">
+                    <strong class="font-semibold">温馨提示：</strong>如果重启多次输入激活码无效,请尝试切换需要激活的软件的版本
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="px-6 py-5 bg-slate-50 rounded-b-2xl border-t border-slate-200">
+              <button
+                @click="closeGuideModal"
+                class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold transition-all shadow-sm hover:shadow"
+              >
+                我知道了,开始激活
+              </button>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import {Download, Verification, getConde} from "../api";
+import {ref} from 'vue'
+import {Download, getConde, Verification} from "../api";
 import {useDrvice} from "../store/useDrvice";
 import {decrypt} from "../util/crypt";
 import {Actions, CopyText, DownloadAndExtract} from '../../wailsjs/go/main/App'
@@ -492,6 +636,7 @@ const selectedVersion = ref<'high' | 'low'>('high')
 const isActivating = ref(false)
 const activationProgress = ref('正在连接服务器...')
 const showResultModal = ref(false)
+const showGuideModal = ref(true) // 激活流程引导弹窗
 const activatedSoftwareList = ref<ActivatedSoftware[]>([])
 const activatedPluginList = ref<ActivatedSoftware[]>([]) // 已激活插件列表
 const activationResult = ref<ActivationResult>({ status: 'success' })
@@ -698,6 +843,11 @@ const retryActivation = () => {
 // 关闭弹窗
 const closeModal = () => {
   showResultModal.value = false
+}
+
+// 关闭引导弹窗
+const closeGuideModal = () => {
+  showGuideModal.value = false
 }
 
 // 返回首页
