@@ -19,7 +19,7 @@
       </div>
 
       <!-- 长提示卡片 -->
-      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 mb-6">
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6 my-8">
         <div class="flex gap-4">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
@@ -471,7 +471,8 @@
     >
       <div
         v-if="showGuideModal"
-        class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center p-4 z-50"
+        class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center p-4 z-50 overflow-y-auto"
+        @click="closeGuideModal"
       >
         <transition
           enter-active-class="transition ease-out duration-200"
@@ -483,7 +484,7 @@
         >
           <div
             v-if="showGuideModal"
-            class="bg-white rounded-2xl shadow-xl max-w-lg w-full border border-slate-200"
+            class="bg-white rounded-2xl shadow-xl max-w-lg w-full border border-slate-200 my-8"
             @click.stop
           >
             <!-- 头部 -->
