@@ -109,9 +109,9 @@ func RemoveJetbrainsProductVmoptions(vmoptionsPath string) error {
 		return err
 	}
 
-	// 使用正则表达式匹配 -javaagent: *.jar 和 --add-opens=java.base/jdk.internal.org.objectweb.asm(.tree)?=ALL-UNNAMED
-	reJavaAgent := regexp.MustCompile(`(?i)-javaagent:.*\.jar`)
-	reAddOpens := regexp.MustCompile(`^--add-opens=java\.base/jdk\.internal\.org\.objectweb\.asm(?:\.tree)?=ALL-UNNAMED`)
+	// 使用正则表达式匹配包含 -javaagent 或 --add-opens 的行
+	reJavaAgent := regexp.MustCompile(`(?i)-javaagent`)
+	reAddOpens := regexp.MustCompile(`--add-opens`)
 
 	lines := strings.Split(string(data), "\n")
 	var out []string
@@ -418,8 +418,6 @@ func AppendVmoptionsForActivation(vmoptionsPath string) error {
 	}
 	// 拼接激活参数
 	activationLines := []string{
-		"--add-opens=java.base/jdk.internal.org.objectweb.asm=ALL-UNNAMED",
-		"--add-opens=java.base/jdk.internal.org.objectweb.asm.tree=ALL-UNNAMED",
 		"-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains",
 	}
 	// 在文件最后面追加激活参数
