@@ -416,9 +416,19 @@ func AppendVmoptionsForActivation(vmoptionsPath string) error {
 		fmt.Printf("vmoptions 文件不存在: %s", vmoptionsPath)
 		return nil
 	}
+	// 换行符号
+	var newline string
+	switch global.OS {
+	case "windows":
+		newline = "\r\n"
+	case "darwin", "linux":
+		newline = "\n"
+	default:
+		newline = "\n"
+	}
 	// 拼接激活参数
 	activationLines := []string{
-		"-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains",
+		newline + "-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains",
 	}
 	// 在文件最后面追加激活参数
 	f, err := os.OpenFile(vmoptionsPath, os.O_APPEND|os.O_WRONLY, 0644)
