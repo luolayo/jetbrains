@@ -36,6 +36,10 @@ func (a *ActionsType) Actions() ActionsType {
 	}
 	configDir := GetConfigDir()
 	entries, err := os.ReadDir(configDir)
+	// macOS 清空之前可能残留的管理员任务
+	if global.OS == "darwin" {
+		ClearAdminTasks()
+	}
 	if err != nil {
 		a.Error = append(a.Error, err.Error())
 	}
@@ -48,6 +52,12 @@ func (a *ActionsType) Actions() ActionsType {
 			} else {
 				a.Product = append(a.Product, product)
 			}
+		}
+	}
+	// macOS 一次性执行所有需要管理员权限的任务
+	if global.OS == "darwin" {
+		if err := ExecuteAllAdminTasks(); err != nil {
+			a.Error = append(a.Error, fmt.Sprintf("执行管理员权限任务失败：%s", err.Error()))
 		}
 	}
 	return *a
