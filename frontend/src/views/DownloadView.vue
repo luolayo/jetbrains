@@ -1,5 +1,37 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+    <!-- 进入页面弹框提示 -->
+    <div v-if="showWelcomeDialog" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-lg mx-4 overflow-hidden">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-500 p-6">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h2 class="text-xl font-bold text-white">温馨提示</h2>
+          </div>
+        </div>
+        <div class="p-6">
+          <p class="text-slate-700 leading-relaxed mb-4">
+            本下载功能为<span class="font-semibold text-amber-600">附赠功能</span>，如遇到任何问题（网络问题、下载失败、安装失败等），请直接前往 <span class="font-semibold text-blue-600">JetBrains 官网</span> 自行下载安装即可。
+          </p>
+          <p class="text-slate-500 text-sm">
+            官网地址：https://www.jetbrains.com/
+          </p>
+        </div>
+        <div class="px-6 pb-6">
+          <button
+            @click="showWelcomeDialog = false"
+            class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-medium rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl"
+          >
+            我已知晓，继续使用
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="container mx-auto px-4 py-8 max-w-6xl">
       <!-- 返回按钮 -->
       <button
@@ -35,12 +67,6 @@
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                <span>无法使用给我一个反馈即可，你也可以选择不反馈</span>
-              </li>
-              <li class="flex items-start gap-2">
-                <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
                 <span>本功能属于附赠功能，所以能不能用我都不会去售后，并且本功能一切来源于官网，所以你官网下载不了本软件也无法下载安装</span>
               </li>
               <li class="flex items-start gap-2">
@@ -54,6 +80,12 @@
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
                 <span>目前本软件过滤了一些乱七八糟的软件，以下的列表里的软件都是常用且能正常激活的</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>如遇到任何下载或安装问题，请直接前往 JetBrains 官网自行下载安装即可</span>
               </li>
             </ul>
           </div>
@@ -354,12 +386,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, reactive } from 'vue'
-import { getVersion } from '../api/download'
-import type { DownloadData, ReleaseData, DownloadOption } from '../type'
-import { ElMessage } from 'element-plus'
-import { SelectDirectory, DownloadAndInstall } from '../../wailsjs/go/main/App'
-import { EventsOn, EventsOff } from '../../wailsjs/runtime/runtime'
+import {computed, onMounted, onUnmounted, reactive, ref, watch} from 'vue'
+import {getVersion} from '../api/download'
+import type {DownloadData, DownloadOption, ReleaseData} from '../type'
+import {ElMessage} from 'element-plus'
+import {DownloadAndInstall, SelectDirectory} from '../../wailsjs/go/main/App'
+import {EventsOff, EventsOn} from '../../wailsjs/runtime/runtime'
 
 // 产品列表
 const products = [
@@ -431,8 +463,12 @@ const detectedOS = ref('windows')
 const showVersionDropdown = ref(false)
 const loadingVersions = ref(false)
 const availableVersions = ref<string[]>([])
-// 保存选择的目录路径
+// 保存选择的目录路径（安装目录）
 const selectedDir = ref('')
+// 欢迎弹框状态
+const showWelcomeDialog = ref(true)
+// 系统默认下载目录
+const defaultDownloadDir = ref('')
 
 // 下载安装列表状态
 const downloadList = ref<Array<{
