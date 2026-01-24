@@ -341,30 +341,13 @@ func removeLinesContaining(filePath, substr string) error {
 	return nil
 }
 
-// ActivateSingleJetbrainsProduct 激活单个 JetBrains 产品
+// ActivateSingleJetbrainsProduct 激活单个 Jetbrains 产品
 func ActivateSingleJetbrainsProduct(productDir string) (Product, error) {
 	// 进入传过来的目录去找.home文件，如果存在则读取内容
 	homeFilePath := filepath.Join(productDir, ".home")
 	if _, err := os.Stat(homeFilePath); os.IsNotExist(err) {
 		// .home 文件不存在，跳过
 		return Product{}, nil
-	}
-	fmt.Printf("找到 .home 文件: %s\n", homeFilePath)
-	pidFilePath := filepath.Join(productDir, ".pid")
-	// 读取 .pid 文件内容
-	pid, err := os.ReadFile(pidFilePath)
-	if err != nil {
-		fmt.Printf("未找到 .pid 文件: %s，继续激活流程\n", pidFilePath)
-	}
-	// 如果 pid 不为空则说明程序还在运行，尝试关闭
-	if len(pid) > 0 {
-		fmt.Printf("检测到产品正在运行，尝试关闭进程 PID: %s\n", string(pid))
-		err := CloseJetbrainsProcessByPid(strings.TrimSpace(string(pid)))
-		if err != nil {
-			fmt.Printf("关闭进程失败: %v，继续激活流程\n", err)
-		} else {
-			fmt.Println("进程已关闭，继续激活流程")
-		}
 	}
 	// 读取 .home 文件内容
 	data, err := os.ReadFile(homeFilePath)
@@ -444,20 +427,13 @@ func AppendVmoptionsForActivation(vmoptionsPath string) error {
 		newline = "\n"
 	}
 	// 拼接激活参数
-	activationContent := newline + "-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains"
-
+	activationLines := []string{
+		"-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains",
+		newline + "-javaagent:" + global.WorkDir + "/ja-netfilter.jar=jetbrains",
+	}
 	// 在文件最后面追加激活参数
 	f, err := os.OpenFile(vmoptionsPath, os.O_APPEND|os.O_WRONLY, 0644)
 	if err != nil {
-		if os.IsPermission(err) && global.OS == "darwin" {
-			// 收集到任务列表，稍后统一执行
-			CollectAdminTask(AdminTask{
-				Type:     "append",
-				FilePath: vmoptionsPath,
-				Content:  activationContent,
-			})
-			return nil
-		}
 		return fmt.Errorf("文件打开失败: %v", err)
 	}
 	defer func(f *os.File) {
@@ -467,90 +443,10 @@ func AppendVmoptionsForActivation(vmoptionsPath string) error {
 		}
 	}(f)
 
-	if _, err := f.WriteString(activationContent + "\n"); err != nil {
-		return fmt.Errorf("写入文件失败: %v", err)
-	}
-	return nil
-}
-
-// AdminTask 表示一个需要管理员权限执行的任务
-type AdminTask struct {
-	Type     string // "kill" 或 "append"
-	PID      string // 用于 kill 任务
-	FilePath string // 用于 append 任务
-	Content  string // 用于 append 任务
-}
-
-// pendingAdminTasks 收集所有需要管理员权限的任务
-var pendingAdminTasks []AdminTask
-
-// CollectAdminTask 收集一个需要管理员权限的任务
-func CollectAdminTask(task AdminTask) {
-	pendingAdminTasks = append(pendingAdminTasks, task)
-}
-
-// ExecuteAllAdminTasks 一次性执行所有收集的管理员权限任务
-func ExecuteAllAdminTasks() error {
-	if len(pendingAdminTasks) == 0 {
-		return nil
-	}
-
-	// 构建 shell 命令，将所有任务合并
-	var commands []string
-	for _, task := range pendingAdminTasks {
-		switch task.Type {
-		case "kill":
-			// kill 命令加上 || true 以防进程已经退出导致整个脚本失败
-			commands = append(commands, fmt.Sprintf("kill -9 %s 2>/dev/null || true", task.PID))
-		case "append":
-			commands = append(commands, fmt.Sprintf("echo %q >> %q", task.Content, task.FilePath))
+	for _, line := range activationLines {
+		if _, err := f.WriteString(line + "\n"); err != nil {
+			return fmt.Errorf("写入文件失败: %v", err)
 		}
-	}
-
-	if len(commands) == 0 {
-		pendingAdminTasks = nil
-		return nil
-	}
-
-	// 将所有命令用 ; 连接，一次性执行
-	combinedCmd := strings.Join(commands, " ; ")
-	script := fmt.Sprintf(`do shell script "%s" with administrator privileges`, combinedCmd)
-
-	cmd := exec.Command("osascript", "-e", script)
-	output, err := cmd.CombinedOutput()
-
-	// 清空任务列表
-	pendingAdminTasks = nil
-
-	if err != nil {
-		return fmt.Errorf("管理员权限执行失败: %v, output: %s", err, output)
-	}
-	return nil
-}
-
-// ClearAdminTasks 清空待执行的管理员任务
-func ClearAdminTasks() {
-	pendingAdminTasks = nil
-}
-
-func CloseJetbrainsProcessByPid(pid string) error {
-	// 如果是macos，收集到任务列表，稍后统一执行
-	if global.OS == "darwin" {
-		CollectAdminTask(AdminTask{
-			Type: "kill",
-			PID:  pid,
-		})
-		return nil
-	}
-	var cmd *exec.Cmd
-	if global.OS == "windows" {
-		cmd = exec.Command("taskkill", "/PID", pid, "/F")
-	} else {
-		cmd = exec.Command("kill", "-9", pid)
-	}
-
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("关闭进程失败: %v", err)
 	}
 	return nil
 }
