@@ -21,27 +21,38 @@ const MacOSCheck = async () => {
 onMounted(async () => {
   await MacOSCheck()
   try {
-    await Promise.all([
-      drviceStore.getDrviceInfo(),
-      drviceStore.getCode()
-    ]).then(() => {
-      ElMessage({
-        message: '设备信息加载完成',
-        type: 'success',
-        duration: 2000
-      })
-      isLoading.value = false
-    }).catch(() => {
-      ElMessageBox.alert(
-        '获取设备信息失败，请确保您的电脑有wmic或者powershel3.0及以上版本。',
-        '加载失败',
-        {
-          confirmButtonText: '确定',
-          type: 'error'
-        });
-    })
+    // 先获取设备信息
+    await drviceStore.getDrviceInfo()
   } catch (error) {
-    console.error('加载数据失败:', error);
+    console.error('获取设备信息失败:', error);
+    await ElMessageBox.alert(
+      '获取设备信息失败，请确保您的电脑有wmic或者PowerShell 3.0及以上版本。',
+      '加载失败',
+      {
+        confirmButtonText: '确定',
+        type: 'error'
+      });
+    return;
+  }
+
+  try {
+    // 再获取激活码
+    await drviceStore.getCode()
+    ElMessage({
+      message: '设备信息加载完成',
+      type: 'success',
+      duration: 2000
+    })
+    isLoading.value = false
+  } catch (error) {
+    console.error('连接服务器失败:', error);
+    await ElMessageBox.alert(
+      '连接服务器失败，请重启软件后重试。',
+      '加载失败',
+      {
+        confirmButtonText: '确定',
+        type: 'error'
+      });
   }
 });
 </script>
