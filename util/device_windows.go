@@ -11,7 +11,8 @@ import (
 
 func getBIOSSerialNumber() (string, error) {
 	// 优先获取 UUID，如果失败则尝试主板序列号
-	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command",
+	// 使用 -NoProfile 避免加载用户profile导致输出混入其他信息
+	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoProfile", "-Command",
 		"$cs = Get-CimInstance Win32_ComputerSystemProduct; "+
 			"if ($cs.UUID -and $cs.UUID -ne '00000000-0000-0000-0000-000000000000') { $cs.UUID } "+
 			"else { (Get-CimInstance Win32_BaseBoard | Select-Object -First 1).SerialNumber }")
@@ -34,7 +35,7 @@ func getBIOSSerialNumber() (string, error) {
 }
 
 func getCPUSerialNumber() (string, error) {
-	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command",
+	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoProfile", "-Command",
 		"Get-CimInstance Win32_Processor | Select-Object -First 1 -ExpandProperty ProcessorId")
 	// 隐藏 PowerShell 窗口
 	cmd.SysProcAttr = &syscall.SysProcAttr{
@@ -49,7 +50,7 @@ func getCPUSerialNumber() (string, error) {
 }
 
 func getDiskSerialNumber() (string, error) {
-	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command",
+	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoProfile", "-Command",
 		"Get-CimInstance Win32_DiskDrive | Select-Object -First 1 -ExpandProperty SerialNumber")
 	// 隐藏 PowerShell 窗口
 	cmd.SysProcAttr = &syscall.SysProcAttr{
@@ -64,7 +65,7 @@ func getDiskSerialNumber() (string, error) {
 }
 
 func getBoardSerialNumber() (string, error) {
-	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-Command",
+	cmd := exec.Command("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-NoProfile", "-Command",
 		"Get-CimInstance Win32_BaseBoard | Select-Object -First 1 -ExpandProperty SerialNumber")
 	// 隐藏 PowerShell 窗口
 	cmd.SysProcAttr = &syscall.SysProcAttr{
