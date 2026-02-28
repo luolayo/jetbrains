@@ -406,6 +406,32 @@ func ActivateJetbrainsProduct(productDir string, productName string, productDirN
 	if err != nil {
 		return err
 	}
+
+	// Windows: 设置 _VM_OPTIONS 环境变量指向安装目录的 vmoptions 文件
+	if global.OS == "windows" {
+		if err := SetProductVmOptionsEnvWindows(productCode, vmoptionsPath); err != nil {
+			fmt.Printf("warning: 设置 %s 环境变量失败: %v\n", productCode, err)
+		}
+	}
+
+	return nil
+}
+
+// SetProductVmOptionsEnvWindows 在 Windows 上设置产品的 _VM_OPTIONS 用户环境变量
+func SetProductVmOptionsEnvWindows(productCode string, vmoptionsPath string) error {
+	if productCode == "" {
+		return nil
+	}
+	if _, err := os.Stat(vmoptionsPath); os.IsNotExist(err) {
+		return nil
+	}
+
+	envName := strings.ToUpper(productCode) + "_VM_OPTIONS"
+	cmd := exec.Command("reg", "add", "HKCU\\Environment", "/v", envName, "/t", "REG_SZ", "/d", vmoptionsPath, "/f")
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("设置环境变量 %s 失败: %v", envName, err)
+	}
+	fmt.Printf("已设置环境变量: %s=%s\n", envName, vmoptionsPath)
 	return nil
 }
 

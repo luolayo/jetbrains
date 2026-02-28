@@ -53,7 +53,7 @@
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                <span>激活成功后，需要手动输入激活码，激活码会在激活信息中告诉您，如果您已经打开了要激活的软件，请重新启动软件</span>
+                <span>识别成功后，需要手动输入生成的码，码会在激活信息中告诉您，如果您已经打开了要激活的软件，请关闭软件</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -79,7 +79,7 @@
             <div class="flex-1">
               <p class="text-sm font-medium text-amber-900 mb-1">提醒</p>
               <p class="text-sm text-amber-800">
-                <strong>软件本体激活：</strong>激活 JetBrains 软件（IDEA、WebStorm 等）<br>
+                <strong>软件本体激活：</strong>激活 JetBrains 软件（IDEA、WebStorm 等），请关闭这些软件再激活<br>
                 <strong>插件激活：</strong>激活插件，输入插件名称即可获取激活码 <br>
                 <strong>插件激活需要先使用本根据激活软件本体才能激活插件，否则无法激活，激活后不保证能否使用</strong>
               </p>
@@ -218,12 +218,12 @@
 
       <!-- 激活信息 -->
       <div v-if="activationType === 'software'" class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">已激活软件</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">已识别软件</h2>
         <div v-if="activatedSoftwareList.length === 0" class="text-center py-8 text-slate-500">
           <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p>暂无已激活软件</p>
+          <p>暂无已识别软件</p>
         </div>
         <div v-else class="grid md:grid-cols-2 gap-4">
           <!-- 每个软件一个独立卡片 -->
@@ -256,7 +256,7 @@
                     'px-2 py-0.5 rounded-md text-xs font-semibold',
                     software.status === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
                   ]">
-                    {{ software.status === 'success' ? '激活成功' : '激活失败' }}
+                    {{ software.status === 'success' ? '识别成功' : '识别失败' }}
                   </span>
                 </div>
               </div>
@@ -267,12 +267,12 @@
 
       <!-- 已激活插件列表 -->
       <div v-if="activationType === 'plugin'" class="bg-white rounded-2xl shadow-sm p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">已激活插件</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">已识别插件</h2>
         <div v-if="activatedPluginList.length === 0" class="text-center py-8 text-slate-500">
           <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
             <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
           </svg>
-          <p>暂无已激活插件</p>
+          <p>暂无已识别插件</p>
         </div>
         <div v-else class="grid md:grid-cols-2 gap-4">
           <!-- 每个插件一个独立卡片 -->
@@ -357,17 +357,17 @@
                 </svg>
               </div>
               <h3 class="text-2xl font-bold text-slate-900 mb-2">
-                {{ activationType === 'plugin' ? '获取成功！' : '激活成功！' }}
+                {{ activationType === 'plugin' ? '获取成功！' : '获取成功！' }}
               </h3>
               <p class="text-slate-600 mb-6">
-                {{ activationType === 'plugin' ? '插件激活码已生成，请复制使用' : '请将激活码复制到软件里即可成功激活' }}
+                {{ activationType === 'plugin' ? '插件激活码已生成，请复制使用' : '如果你已打开要激活的软件，请重启电脑后重新激活，如果没有打开，请复制使用' }}
               </p>
 
               <!-- 激活码文本域 -->
               <div class="bg-slate-50 rounded-xl p-4 mb-6 text-left">
                 <div class="flex items-center justify-between mb-2">
                   <h4 class="text-sm font-semibold text-slate-900">
-                    {{ activationType === 'plugin' ? '插件激活码' : '激活码' }}
+                    {{ activationType === 'plugin' ? '插件激活码' : '软件激活码' }}
                   </h4>
                   <button
                     @click="copyActivationCode"
@@ -472,7 +472,6 @@
       <div
         v-if="showGuideModal"
         class="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center p-4 z-50 overflow-y-auto"
-        @click="closeGuideModal"
       >
         <transition
           enter-active-class="transition ease-out duration-200"
