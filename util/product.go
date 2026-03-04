@@ -358,6 +358,11 @@ func ActivateSingleJetbrainsProduct(productDir string) (Product, error) {
 	installPath := string(data)
 	binPath := filepath.Join(installPath, "bin")
 
+	// 检测binpath是否存在，如果不存在则跳过，避免ide更新后残留的配置文件
+	if _, err := os.Stat(binPath); os.IsNotExist(err) {
+		return Product{}, nil
+	}
+
 	// 从productDir获取产品名称和版本号
 	_, productDirName := filepath.Split(productDir)
 	// 检测产品名称有没有空格有就去掉

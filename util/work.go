@@ -47,7 +47,11 @@ func (a *ActionsType) Actions() ActionsType {
 			if err != nil {
 				a.Error = append(a.Error, fmt.Sprintf("激活 %s 失败，错误信息：%s", entry.Name(), err.Error()))
 			} else {
-				a.Product = append(a.Product, product)
+				// 对于成功激活的产品，添加到 Product 列表中，如果product为空则不添加
+
+				if product.ProductName != "" && product.ProductVersion != "" {
+					a.Product = append(a.Product, product)
+				}
 			}
 		}
 	}
