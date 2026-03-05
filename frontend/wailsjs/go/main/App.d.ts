@@ -22,6 +22,8 @@ export function Greet(arg1:string):Promise<string>;
 
 export function InstallFile(arg1:string,arg2:string):Promise<void>;
 
+export function ManualActions(arg1:string):Promise<util.ManualActionsResult>;
+
 export function SelectDirectory():Promise<string>;
 
 export function SelectFile():Promise<string>;

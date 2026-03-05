@@ -7,7 +7,7 @@
         class="mb-6 flex items-center gap-2 text-slate-600 hover:text-slate-900 transition-colors"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
         </svg>
         返回首页
       </button>
@@ -24,7 +24,8 @@
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center">
               <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
               </svg>
             </div>
           </div>
@@ -33,31 +34,41 @@
             <ul class="space-y-2 text-sm text-slate-700">
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <span>请确保您已经下载并安装了需要激活的软件</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <span>激活过程需要网络连接，请保持网络畅通</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <span>只支持21年及以后的版本，之前的版本不支持，请关闭需要激活的软件</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <span>识别成功后，需要手动输入生成的码，码会在激活信息中告诉您，如果您已经打开了要激活的软件，请关闭软件</span>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <span>如遇到问题，请联系卖家</span>
               </li>
@@ -74,7 +85,9 @@
         <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 mb-4">
           <div class="flex gap-3">
             <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+              <path fill-rule="evenodd"
+                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                    clip-rule="evenodd"/>
             </svg>
             <div class="flex-1">
               <p class="text-sm font-medium text-amber-900 mb-1">提醒</p>
@@ -170,18 +183,23 @@
                 ? 'bg-gradient-to-br from-purple-500 to-purple-600'
                 : 'bg-gradient-to-br from-blue-500 to-indigo-600'
             ]">
-              <svg v-if="activationType === 'software'" class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              <svg v-if="activationType === 'software'" class="w-10 h-10 text-white" fill="none" stroke="currentColor"
+                   viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
               </svg>
               <svg v-else class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                <path
+                  d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
               </svg>
             </div>
             <h2 class="text-2xl font-bold text-slate-900 mb-2">
               {{ activationType === 'plugin' ? '准备获取插件激活码' : '准备激活' }}
             </h2>
             <p class="text-slate-600">
-              {{ activationType === 'plugin' ? '点击下方按钮搜索插件并获取激活码' : '点击下方按钮开始激活您的 JetBrains 产品' }}
+              {{
+                activationType === 'plugin' ? '点击下方按钮搜索插件并获取激活码' : '点击下方按钮开始激活您的 JetBrains 产品'
+              }}
             </p>
           </div>
 
@@ -203,7 +221,8 @@
             <span v-else class="flex items-center justify-center gap-3">
               <svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <path class="opacity-75" fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
               {{ activationProgress }}
             </span>
@@ -219,9 +238,14 @@
       <!-- 激活信息 -->
       <div v-if="activationType === 'software'" class="bg-white rounded-2xl shadow-sm p-6 mb-6">
         <h2 class="text-lg font-semibold text-slate-900 mb-4">已识别软件</h2>
+        <!--手动识别软件-->
+        <router-link to="/manualOperation" class="block mb-4 text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+          有未识别的软件？点击这里手动识别（仅限 Windows）
+        </router-link>
         <div v-if="activatedSoftwareList.length === 0" class="text-center py-8 text-slate-500">
           <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
           <p>暂无已识别软件</p>
         </div>
@@ -242,15 +266,21 @@
                 'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
                 software.status === 'success' ? 'bg-green-100' : 'bg-red-100'
               ]">
-                <svg v-if="software.status === 'success'" class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <svg v-if="software.status === 'success'" class="w-6 h-6 text-green-600" fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <svg v-else class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="font-semibold text-slate-900 mb-1 truncate">{{ software.productName }} - {{software.prodcutVersion}}</h3>
+                <h3 class="font-semibold text-slate-900 mb-1 truncate">{{ software.productName }} -
+                  {{ software.prodcutVersion }}</h3>
                 <div class="flex items-center gap-2 mb-1">
                   <span :class="[
                     'px-2 py-0.5 rounded-md text-xs font-semibold',
@@ -270,7 +300,8 @@
         <h2 class="text-lg font-semibold text-slate-900 mb-4">已识别插件</h2>
         <div v-if="activatedPluginList.length === 0" class="text-center py-8 text-slate-500">
           <svg class="w-16 h-16 mx-auto mb-3 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+            <path
+              d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
           </svg>
           <p>暂无已识别插件</p>
         </div>
@@ -291,11 +322,15 @@
                 'w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0',
                 plugin.status === 'success' ? 'bg-purple-100' : 'bg-red-100'
               ]">
-                <svg v-if="plugin.status === 'success'" class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                <svg v-if="plugin.status === 'success'" class="w-6 h-6 text-purple-600" fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path
+                    d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
                 </svg>
                 <svg v-else class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd"/>
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
@@ -349,18 +384,24 @@
                 'w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4',
                 activationType === 'plugin' ? 'bg-purple-100' : 'bg-green-100'
               ]">
-                <svg v-if="activationType === 'software'" class="w-10 h-10 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                <svg v-if="activationType === 'software'" class="w-10 h-10 text-green-600" fill="currentColor"
+                     viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd"/>
                 </svg>
                 <svg v-else class="w-10 h-10 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z" />
+                  <path
+                    d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.477.859h4z"/>
                 </svg>
               </div>
               <h3 class="text-2xl font-bold text-slate-900 mb-2">
                 {{ activationType === 'plugin' ? '获取成功！' : '获取成功！' }}
               </h3>
               <p class="text-slate-600 mb-6">
-                {{ activationType === 'plugin' ? '插件激活码已生成，请复制使用' : '如果你已打开要激活的软件，请重启电脑后重新激活，如果没有打开，请复制使用' }}
+                {{
+                  activationType === 'plugin' ? '插件激活码已生成，请复制使用' : '如果你已打开要激活的软件，请重启电脑后重新激活，如果没有打开，请复制使用'
+                }}
               </p>
 
               <!-- 激活码文本域 -->
@@ -405,7 +446,9 @@
             <div v-else class="text-center">
               <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg class="w-10 h-10 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clip-rule="evenodd"/>
                 </svg>
               </div>
               <h3 class="text-2xl font-bold text-slate-900 mb-2">
@@ -414,13 +457,16 @@
               <p class="text-slate-600 mb-6">{{ activationResult.errorMessage }}</p>
 
               <!-- 软件激活失败的原因提示 -->
-              <div v-if="activationType === 'software'" class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
+              <div v-if="activationType === 'software'"
+                   class="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-6 text-left">
                 <h4 class="font-semibold text-red-900 mb-2">可能的原因：</h4>
                 <ul class="space-y-1 text-sm text-red-700">
                   <li>软件安装后开机后没有打开过，读取不到配置目录</li>
                   <li>win如果打开了软件，请把所有软件关掉再重启工具</li>
                   <li>mac 没有给磁盘权限</li>
-                  <li>激活失败大概率是读取不到文件夹，没有文件夹权限，被杀毒拦截等，如果关闭杀毒或者按照上述操作还是不行，请去教程里的问题列表查找问题和解决办法</li>
+                  <li>
+                    激活失败大概率是读取不到文件夹，没有文件夹权限，被杀毒拦截等，如果关闭杀毒或者按照上述操作还是不行，请去教程里的问题列表查找问题和解决办法
+                  </li>
                 </ul>
               </div>
 
@@ -498,7 +544,7 @@
                   class="w-8 h-8 rounded-lg hover:bg-slate-100 transition-colors flex items-center justify-center text-slate-400 hover:text-slate-600"
                 >
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
                 </button>
               </div>
@@ -512,7 +558,8 @@
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
                   <div class="flex gap-3">
                     <div class="flex-shrink-0">
-                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                      <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
                         1
                       </div>
                     </div>
@@ -529,7 +576,8 @@
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
                   <div class="flex gap-3">
                     <div class="flex-shrink-0">
-                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                      <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
                         2
                       </div>
                     </div>
@@ -546,7 +594,8 @@
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
                   <div class="flex gap-3">
                     <div class="flex-shrink-0">
-                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                      <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
                         3
                       </div>
                     </div>
@@ -563,7 +612,8 @@
                 <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
                   <div class="flex gap-3">
                     <div class="flex-shrink-0">
-                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
+                      <div
+                        class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold">
                         4
                       </div>
                     </div>
@@ -581,7 +631,9 @@
               <div class="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
                 <div class="flex gap-2">
                   <svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    <path fill-rule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                          clip-rule="evenodd"/>
                   </svg>
                   <p class="text-xs text-amber-800">
                     <strong class="font-semibold">温馨提示：</strong>如果重启多次输入激活码无效,请尝试切换需要激活的软件的版本
@@ -639,7 +691,7 @@ const showResultModal = ref(false)
 const showGuideModal = ref(true) // 激活流程引导弹窗
 const activatedSoftwareList = ref<ActivatedSoftware[]>([])
 const activatedPluginList = ref<ActivatedSoftware[]>([]) // 已激活插件列表
-const activationResult = ref<ActivationResult>({ status: 'success' })
+const activationResult = ref<ActivationResult>({status: 'success'})
 
 // 生成时间戳
 const getTimestamp = () => {
@@ -730,7 +782,7 @@ const startSoftwareActivation = async () => {
       const filename = `jetbrains-activation-${version}.zip`
       await DownloadAndExtract(Array.from(uint8Array), filename)
       const ActionsData = await Actions()
-      if (ActionsData?.error){
+      if (ActionsData?.error) {
         activationResult.value = {
           status: 'failed',
           errorMessage: ActionsData.error.join('\n') || '激活失败，请稍后重试'
@@ -743,8 +795,10 @@ const startSoftwareActivation = async () => {
           activationCode: txt,
         }
         // 填充已激活软件列表
-        activatedSoftwareList.value = ActionsData.product.map((item: { productName: string;
-          productVersion: string}) => ({
+        activatedSoftwareList.value = ActionsData.product.map((item: {
+          productName: string;
+          productVersion: string
+        }) => ({
           productName: item.productName,
           prodcutVersion: item.productVersion,
           time: getTimestamp(),
@@ -798,7 +852,7 @@ const startPluginActivation = async () => {
     if (res.code !== 200) {
       activationResult.value = {
         status: 'failed',
-        errorMessage:  res.message || '获取插件激活码失败，请稍后重试'
+        errorMessage: res.message || '获取插件激活码失败，请稍后重试'
       }
       showResultModal.value = true
       isActivating.value = false

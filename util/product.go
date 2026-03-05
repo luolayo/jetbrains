@@ -310,6 +310,32 @@ func RemoveEnvOtherWindows() error {
 	return nil
 }
 
+// RemoveEnvSingleWindows 仅删除指定产品的 _VM_OPTIONS 注册表环境变量（用户级 + 系统级）
+func RemoveEnvSingleWindows(productCode string) error {
+	if productCode == "" {
+		return nil
+	}
+	envName := strings.ToUpper(productCode) + "_VM_OPTIONS"
+
+	// 删除用户环境变量
+	cmd := exec.Command("reg", "delete", "HKCU\\Environment", "/v", envName, "/f")
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("warning: 删除用户环境变量 %s 失败: %v\n", envName, err)
+	} else {
+		fmt.Printf("已删除用户环境变量: %s\n", envName)
+	}
+
+	// 删除系统环境变量
+	cmd = exec.Command("reg", "delete", "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", "/v", envName, "/f")
+	if err := cmd.Run(); err != nil {
+		fmt.Printf("warning: 删除系统环境变量 %s 失败（需要管理员权限）: %v\n", envName, err)
+	} else {
+		fmt.Printf("已删除系统环境变量: %s\n", envName)
+	}
+
+	return nil
+}
+
 // removeLinesContaining 读取 `filePath`，删除包含 `substr` 的行并写回，若无变化则不修改文件。
 func removeLinesContaining(filePath, substr string) error {
 	data, err := os.ReadFile(filePath)
@@ -480,4 +506,130 @@ func AppendVmoptionsForActivation(vmoptionsPath string) error {
 		}
 	}
 	return nil
+}
+
+// ParseInstallDirName 解析安装目录名称（如 "IntelliJ IDEA 2024.1"）为产品名称、版本和产品代码
+func ParseInstallDirName(dirName string) (string, string, string) {
+	// 去除空格
+	normalized := strings.ReplaceAll(dirName, " ", "")
+
+	// 提取产品名称（数字前的部分）和版本（从第一个数字开始）
+	var productName, productVersion string
+	for i, r := range normalized {
+		if r >= '0' && r <= '9' {
+			productName = normalized[:i]
+			productVersion = normalized[i:]
+			break
+		}
+	}
+	if productName == "" {
+		productName = normalized
+	}
+
+	// 使用大小写不敏感的前缀匹配解析产品代码
+	lower := strings.ToLower(productName)
+	var productCode string
+	switch {
+	case strings.HasPrefix(lower, "intellij"):
+		productCode = "idea"
+	case strings.HasPrefix(lower, "pycharm"):
+		productCode = "pycharm"
+	case strings.HasPrefix(lower, "webstorm"):
+		productCode = "webstorm"
+	case strings.HasPrefix(lower, "phpstorm"):
+		productCode = "phpstorm"
+	case strings.HasPrefix(lower, "clion"):
+		productCode = "clion"
+	case strings.HasPrefix(lower, "goland"):
+		productCode = "goland"
+	case strings.HasPrefix(lower, "rider"):
+		productCode = "rider"
+	case strings.HasPrefix(lower, "datagrip"):
+		productCode = "datagrip"
+	case strings.HasPrefix(lower, "rubymine"):
+		productCode = "rubymine"
+	case strings.HasPrefix(lower, "appcode"):
+		productCode = "appcode"
+	}
+
+	return productName, productVersion, productCode
+}
+
+// ManualActivateProduct 手动激活单个 JetBrains 产品
+func ManualActivateProduct(installDir string) ManualActionsResult {
+	// 1. 检查 bin 目录是否存在
+	binPath := filepath.Join(installDir, "bin")
+	if _, err := os.Stat(binPath); os.IsNotExist(err) {
+		return ManualActionsResult{
+			Error: "安装目录下未找到 bin 目录，请确认选择的是软件安装根目录",
+		}
+	}
+
+	// 2. 从安装路径提取目录名并解析产品信息
+	dirName := filepath.Base(installDir)
+	productName, productVersion, productCode := ParseInstallDirName(dirName)
+	if productCode == "" {
+		return ManualActionsResult{
+			Error: "无法识别该目录对应的 JetBrains 产品",
+		}
+	}
+
+	if global.OS != "windows" {
+		return ManualActionsResult{
+			Error: "当前操作系统不支持自动激活，请选择 Windows 系统",
+		}
+	}
+	// 确定 vmoptions 后缀
+	var vmoptionsSuffix string
+	switch global.OS {
+	case "windows":
+		vmoptionsSuffix = "64.exe.vmoptions"
+	default:
+		return ManualActionsResult{
+			Error: fmt.Sprintf("不支持的操作系统: %s", global.OS),
+		}
+	}
+
+	// 3. 检查 vmoptions 文件是否存在
+	vmoptionsPath := filepath.Join(binPath, productCode+vmoptionsSuffix)
+	if _, err := os.Stat(vmoptionsPath); os.IsNotExist(err) {
+		return ManualActionsResult{
+			Error: "未找到 vmoptions 配置文件，请确认软件已正确安装",
+		}
+	}
+
+	// 4. 检查 ja-netfilter.jar 是否存在（判断是否需要下载）
+	jarPath := filepath.Join(global.WorkDir, "ja-netfilter.jar")
+	if _, err := os.Stat(jarPath); os.IsNotExist(err) {
+		return ManualActionsResult{
+			NeedDownload: true,
+			Product: Product{
+				ProductName:    productName,
+				ProductVersion: productVersion,
+			},
+		}
+	}
+	// 5. 清理当前产品
+	if err := RemoveJetbrainsProductVmoptions(vmoptionsPath); err != nil {
+		fmt.Printf("warning: 清理 bin vmoptions 失败: %v\n", err)
+	}
+	_ = RemoveEnvSingleWindows(productCode)
+
+	// 6. 激活当前产品
+	if err := AppendVmoptionsForActivation(vmoptionsPath); err != nil {
+		return ManualActionsResult{
+			Error: fmt.Sprintf("写入 vmoptions 失败: %v", err),
+		}
+	}
+	if global.OS == "windows" {
+		if err := SetProductVmOptionsEnvWindows(productCode, vmoptionsPath); err != nil {
+			fmt.Printf("warning: 设置 %s 环境变量失败: %v\n", productCode, err)
+		}
+	}
+	return ManualActionsResult{
+		Product: Product{
+			ProductName:    productName,
+			ProductVersion: productVersion,
+		},
+	}
 }

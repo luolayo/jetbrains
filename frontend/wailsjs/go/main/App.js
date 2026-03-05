@@ -42,6 +42,10 @@ export function InstallFile(arg1, arg2) {
   return window['go']['main']['App']['InstallFile'](arg1, arg2);
 }
 
+export function ManualActions(arg1) {
+  return window['go']['main']['App']['ManualActions'](arg1);
+}
+
 export function SelectDirectory() {
   return window['go']['main']['App']['SelectDirectory']();
 }

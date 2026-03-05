@@ -17,6 +17,12 @@ type ActionsType struct {
 	Error   []string  `json:"error,omitempty"`
 }
 
+type ManualActionsResult struct {
+	Product      Product `json:"product"`
+	NeedDownload bool    `json:"needDownload"`
+	Error        string  `json:"error,omitempty"`
+}
+
 func (a *ActionsType) Actions() ActionsType {
 	flag, _ := EnsureDir(GetAppDataDir(), false)
 	if !flag {

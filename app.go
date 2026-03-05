@@ -60,6 +60,11 @@ func (a *App) Actions() util.ActionsType {
 	return actions.Actions()
 }
 
+// ManualActions 手动激活指定安装目录的 JetBrains 产品
+func (a *App) ManualActions(installDir string) util.ManualActionsResult {
+	return util.ManualActivateProduct(installDir)
+}
+
 // Clean 激活清理
 func (a *App) Clean() string {
 	switch global.OS {
