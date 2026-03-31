@@ -73,7 +73,12 @@
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
-                <span>Windows用户和Linux请注意选择的安装目录就是软件下载安装包和安装软件的地方，软件安装后请打开一次关闭后再使用激活功能</span>
+                <div class="flex flex-col gap-1 leading-relaxed">
+                  <span>Windows 用户下载完成后会直接打开安装包，请按安装向导手动安装。</span>
+                  <span>Linux 用户会安装到所选目录。</span>
+                  <span>macOS 用户会自动安装到“应用程序”目录。</span>
+                  <span>软件安装后请先打开一次并关闭，再使用激活功能。</span>
+                </div>
               </li>
               <li class="flex items-start gap-2">
                 <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -255,8 +260,8 @@
 
       <!-- 保存目录选择区域 -->
       <div class="bg-white rounded-2xl shadow-sm p-6 mb-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">安装目录</h2>
-        <p class="text-sm text-slate-600 mb-4">选择软件的安装位置，下载完成后将自动安装并删除安装包</p>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">保存目录</h2>
+        <p class="text-sm text-slate-600 mb-4">Windows 会将安装包下载到该目录并自动打开；Linux 会安装到该目录；macOS 会忽略该目录并安装到 /Applications</p>
         <div class="flex gap-3">
           <button
             @click="selectDir"
@@ -342,7 +347,7 @@
             </div>
 
             <!-- 安装进度条 -->
-            <div v-if="item.status === 'installing' || item.status === 'installed'" class="space-y-2">
+            <div v-if="item.status === 'installing' || item.status === 'installed' || item.status === 'opened'" class="space-y-2">
               <div class="flex items-center justify-between text-sm">
                 <span class="text-slate-600">安装进度</span>
                 <span class="font-medium text-green-600">{{ item.installProgress }}%</span>
@@ -363,7 +368,8 @@
                   item.status === 'pending' && 'bg-slate-100 text-slate-700',
                   item.status === 'downloading' && 'bg-blue-100 text-blue-700',
                   item.status === 'installing' && 'bg-purple-100 text-purple-700',
-                  item.status === 'installed' && 'bg-green-100 text-green-700'
+                  item.status === 'installed' && 'bg-green-100 text-green-700',
+                  item.status === 'opened' && 'bg-emerald-100 text-emerald-700'
                 ]"
               >
                 {{ getStatusText(item.status) }}
@@ -476,7 +482,7 @@ const downloadList = ref<Array<{
   link: string
   size: string
   filePath: string
-  status: 'pending' | 'downloading' | 'installing' | 'installed'
+  status: 'pending' | 'downloading' | 'installing' | 'installed' | 'opened'
   downloadProgress: number
   installProgress: number
 }>>([])
@@ -522,7 +528,8 @@ const getStatusText = (status: string): string => {
     'pending': '等待中',
     'downloading': '下载中',
     'installing': '安装中',
-    'installed': '已完成'
+    'installed': '已完成',
+    'opened': '已打开安装包'
   }
   return statusMap[status] || '未知'
 }
@@ -765,8 +772,14 @@ onMounted(() => {
     const item = downloadList.value.find(item => item.filePath === data.filePath)
     if (item) {
       item.installProgress = 100
+      if (data.filePath.endsWith('.exe')) {
+        item.status = 'opened'
+        ElMessage.success('安装包已打开，请按安装向导完成安装')
+        return
+      }
+
       item.status = 'installed'
-      ElMessage.success(`安装完成`)
+      ElMessage.success('安装完成')
     }
   })
 
@@ -843,7 +856,8 @@ const downloadFile = async (url: string) => {
       item.downloadProgress = 0
     }
 
-    ElMessage.info(`开始下载并安装: ${filename}`)
+    const actionText = selectedOS.value === 'windows' ? '开始下载并打开安装包' : '开始下载并安装'
+    ElMessage.info(`${actionText}: ${filename}`)
 
     // 调用后端的下载并安装函数（使用修改后的 URL）
     DownloadAndInstall(urlObj.href, tempPath, selectedDir.value).catch(error => {

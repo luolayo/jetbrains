@@ -322,46 +322,35 @@ func DownloadFile(fileUrl string, filePath string, progressCallback ProgressCall
 	return nil
 }
 
-// InstallWindows 在 Windows 上执行安装
+// InstallWindows 在 Windows 上打开安装包，由用户手动完成安装
 func InstallWindows(filePath string, installDir string, progressCallback InstallProgressCallback) error {
-	// 发送进度更新
 	if progressCallback != nil {
-		progressCallback(10.0)
+		progressCallback(20.0)
 	}
 
-	// 使用 /S 静默安装，/D= 指定安装目录
-	// 注意：/D= 参数必须是最后一个参数，且路径不能用引号
-	cmd := exec.Command(filePath, "/S", fmt.Sprintf("/D=%s", installDir))
-
-	// 执行安装命令
-	fmt.Printf("执行安装命令: %s /S /D=%s\n", filePath, installDir)
+	// Windows 不再使用静默安装，直接打开安装包让用户按安装向导完成安装。
+	cmd := exec.Command(filePath)
+	cmd.Dir = filepath.Dir(filePath)
 
 	if progressCallback != nil {
-		progressCallback(30.0)
+		progressCallback(60.0)
 	}
 
-	// 运行命令并等待完成
-	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("安装失败: %v", err)
+	fmt.Printf("打开 Windows 安装包: %s\n", filePath)
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("打开安装包失败: %v", err)
 	}
 
-	if progressCallback != nil {
-		progressCallback(90.0)
-	}
-
-	// 安装完成后删除安装包
-	fmt.Printf("正在删除安装包: %s\n", filePath)
-	if err := os.Remove(filePath); err != nil {
-		// 如果删除失败，打印警告但不返回错误
-		fmt.Printf("警告：删除安装包失败: %v\n", err)
-	} else {
-		fmt.Printf("已删除安装包: %s\n", filePath)
+	// 释放进程句柄，避免等待图形安装程序退出。
+	if cmd.Process != nil {
+		_ = cmd.Process.Release()
 	}
 
 	if progressCallback != nil {
 		progressCallback(100.0)
 	}
 
+	fmt.Printf("Windows 安装包已打开，等待用户手动安装: %s\n", filePath)
 	return nil
 }
 

@@ -186,7 +186,7 @@ func (a *App) DownloadFile(fileUrl string, filePath string) error {
 	return nil
 }
 
-// DownloadAndInstall 下载文件并自动安装
+// DownloadAndInstall 下载文件并安装，Windows 下会直接打开安装包
 // fileUrl: 文件下载链接
 // downloadPath: 下载保存路径（临时目录）
 // installDir: 安装目标目录
@@ -198,11 +198,11 @@ func (a *App) DownloadAndInstall(fileUrl string, downloadPath string, installDir
 		return err
 	}
 
-	// 下载完成后自动安装
+	// 下载完成后安装或打开安装包
 	return a.InstallFile(downloadPath, installDir)
 }
 
-// InstallFile 安装下载的文件到指定目录
+// InstallFile 安装下载的文件到指定目录，Windows 下直接打开安装包
 // filePath: 下载的文件路径
 // installDir: 安装目标目录
 func (a *App) InstallFile(filePath string, installDir string) error {
