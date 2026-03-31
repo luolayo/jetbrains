@@ -216,7 +216,7 @@
             ]"
           >
             <span v-if="!isActivating">
-              {{ activationType === 'plugin' ? '搜索插件' : '立即激活' }}
+              {{ activationType === 'plugin' ? '搜索插件' : '开始识别并激活软件' }}
             </span>
             <span v-else class="flex items-center justify-center gap-3">
               <svg class="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -247,7 +247,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
-          <p>暂无已识别软件</p>
+          <p>暂无已识别软件，请点击上方按钮开始识别并激活</p>
         </div>
         <div v-else class="grid md:grid-cols-2 gap-4">
           <!-- 每个软件一个独立卡片 -->
