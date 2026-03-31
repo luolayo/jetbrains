@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
 
 // InitGlobalPaths 初始化全局路径变量
@@ -202,6 +203,52 @@ type ProgressCallback func(downloaded int64, total int64, percent float64)
 
 // InstallProgressCallback 安装进度回调函数类型
 type InstallProgressCallback func(percent float64)
+
+// CheckDownloadURL 检查下载地址是否可访问。
+// 优先使用 HEAD，若目标服务器不支持则降级到 Range GET。
+func CheckDownloadURL(fileUrl string) error {
+	client := &http.Client{
+		Timeout: 15 * time.Second,
+	}
+
+	headReq, err := http.NewRequest(http.MethodHead, fileUrl, nil)
+	if err != nil {
+		return fmt.Errorf("创建检测请求失败: %v", err)
+	}
+	headReq.Header.Set("User-Agent", "JetBrainsDownloader/1.0")
+
+	resp, err := client.Do(headReq)
+	if err == nil {
+		defer resp.Body.Close()
+
+		if resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices {
+			return nil
+		}
+
+		if resp.StatusCode != http.StatusMethodNotAllowed && resp.StatusCode != http.StatusForbidden {
+			return fmt.Errorf("下载地址不可访问，HTTP状态码: %d", resp.StatusCode)
+		}
+	}
+
+	getReq, err := http.NewRequest(http.MethodGet, fileUrl, nil)
+	if err != nil {
+		return fmt.Errorf("创建检测请求失败: %v", err)
+	}
+	getReq.Header.Set("Range", "bytes=0-0")
+	getReq.Header.Set("User-Agent", "JetBrainsDownloader/1.0")
+
+	resp, err = client.Do(getReq)
+	if err != nil {
+		return fmt.Errorf("检测下载地址失败: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusPartialContent {
+		return fmt.Errorf("下载地址不可访问，HTTP状态码: %d", resp.StatusCode)
+	}
+
+	return nil
+}
 
 func DownloadFile(fileUrl string, filePath string, progressCallback ProgressCallback) error {
 	// 打印接收到的参数

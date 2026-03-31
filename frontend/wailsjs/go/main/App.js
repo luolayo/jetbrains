@@ -6,6 +6,10 @@ export function Actions() {
   return window['go']['main']['App']['Actions']();
 }
 
+export function CheckDownloadURL(arg1) {
+  return window['go']['main']['App']['CheckDownloadURL'](arg1);
+}
+
 export function CheckPermissions() {
   return window['go']['main']['App']['CheckPermissions']();
 }

@@ -390,7 +390,7 @@ import {computed, onMounted, onUnmounted, reactive, ref, watch} from 'vue'
 import {getVersion} from '../api/download'
 import type {DownloadData, DownloadOption, ReleaseData} from '../type'
 import {ElMessage} from 'element-plus'
-import {DownloadAndInstall, SelectDirectory} from '../../wailsjs/go/main/App'
+import {CheckDownloadURL, DownloadAndInstall, SelectDirectory} from '../../wailsjs/go/main/App'
 import {EventsOff, EventsOn} from '../../wailsjs/runtime/runtime'
 
 // 产品列表
@@ -810,9 +810,16 @@ const downloadFile = async (url: string) => {
   try {
     // 从 URL 中提取文件名
     const urlObj = new URL(url)
-    urlObj.hostname = urlObj.host.replace('download.jetbrains.com', 'download-cdn.jetbrains.com')
     const pathname = urlObj.pathname
     const filename = pathname.substring(pathname.lastIndexOf('/') + 1)
+
+    // 检查下载地址是否能够访问
+    const res = await CheckDownloadURL(urlObj.href)
+
+    if (res !== null){
+      ElMessage.error(`下载地址不可访问请官网自行下载: 原因-${res}`)
+      return
+    }
 
     // 临时下载路径（根据操作系统使用正确的路径分隔符）
     const pathSeparator = selectedDir.value.includes('\\') ? '\\' : '/'

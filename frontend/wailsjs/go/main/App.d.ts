@@ -4,6 +4,8 @@ import {util} from '../models';
 
 export function Actions():Promise<util.ActionsType>;
 
+export function CheckDownloadURL(arg1:string):Promise<void>;
+
 export function CheckPermissions():Promise<boolean>;
 
 export function Clean():Promise<string>;

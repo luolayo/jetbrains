@@ -147,6 +147,11 @@ func (a *App) SelectFile() (string, error) {
 	})
 }
 
+// CheckDownloadURL 检查下载地址是否可以访问
+func (a *App) CheckDownloadURL(fileUrl string) error {
+	return util.CheckDownloadURL(fileUrl)
+}
+
 // DownloadFile 从给定的URL下载文件到指定路径，并实时返回下载进度
 // fileUrl: 文件下载链接
 // filePath: 保存文件的完整路径
