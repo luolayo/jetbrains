@@ -866,7 +866,8 @@ const downloadFile = async (url: string) => {
 
   } catch (error) {
     console.error('下载失败:', error)
-    ElMessage.error(`下载失败: ${error}`)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    ElMessage.error(`下载失败: ${errorMessage}`)
   }
 }
 
