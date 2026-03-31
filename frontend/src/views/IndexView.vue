@@ -214,7 +214,7 @@ onMounted(async () => {
     status.value = 'success'
     orderNumber.value = data.msg
   } else if (result) {
-    ElMessage.error('设备未授权，请输入订单号激活')
+    ElMessage.error(data.msg)
     status.value = 'needOrder'
   }
 })
